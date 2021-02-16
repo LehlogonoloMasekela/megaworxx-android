@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <color name="colorPrimary">#328FC7</color>
+    <color name="colorPrimaryDark">#2F86C1</color>
+    <color name="colorPrimaryLight">#793F8BBF</color>
+
+    <color name="colorAccent">#03DAC5</color>
+    <color name="colorBlack">#000000</color>
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorGrey">#858484</color>
+    <color name="colorLightGrey">#A7A7A7</color>
+    <color name="inputColorGrey">#7D7E7E</color>
+    <color name="colorLightGrey2">#81858585</color>
+    <color name="colorActiveCampaign">#40BCF9</color>
+    <color name="totalHoursWorked">#292244</color>
+    <color name="textColorLink">#0066FF</color>
+    <color name="colorLightBlue">#7FABED</color>
+    <color name="textColorError">#FF0000</color>
+    <color name="dialogSignInButton">#0090FF</color>
+    <color name="dialog_button_pressed">#2D2E2E</color>
+    <color name="dialog_button_normal">#C5C5C5</color>
+    <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/inputColorGrey</color>
+</resources>

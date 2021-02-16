@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".LoginActivity">
+
+    <ScrollView
+        android:id="@+id/scrollView3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fillViewport="false"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <ImageView
+                android:layout_width="@dimen/megaworxx_icon_size"
+                android:layout_height="@dimen/megaworxx_icon_size"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="30dp"
+                android:src="@drawable/megaworxx_icon" />
+
+            <TextView
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:textStyle="bold"
+                android:text="Welcome"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="@dimen/below_logo_text_size" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="15dp"
+                android:orientation="vertical">
+
+
+               <LinearLayout
+                   android:orientation="vertical"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content">
+                   <EditText
+                       android:id="@+id/editEmail"
+                       android:drawableStart="@drawable/ic_user_icon"
+                       android:paddingStart="@dimen/inputbox_padding"
+                       android:drawablePadding="@dimen/inputbox_drawable_padding"
+                       android:paddingEnd="@dimen/inputbox_padding"
+                       android:background="@drawable/inputbox_border"
+                       android:hint="Username"
+                       android:textSize="@dimen/inputbox_text_size"
+                       android:textColor="@color/inputColorGrey"
+                       android:layout_width="match_parent"
+                       android:layout_height="@dimen/inputbox_height"
+                       />
+                   <TextView
+                       android:textSize="14sp"
+                       android:textColor="#FF0000"
+                       android:text="Username is required"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"/>
+               </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <EditText
+                        android:id="@+id/editPassword"
+                        android:textColor="@color/inputColorGrey"
+                        android:drawableStart="@drawable/ic_lock"
+                        android:layout_marginTop="20dp"
+                        android:paddingStart="@dimen/inputbox_padding"
+                        android:drawablePadding="@dimen/inputbox_drawable_padding"
+                        android:paddingEnd="@dimen/inputbox_padding"
+                        android:background="@drawable/inputbox_border"
+                        android:hint="Password"
+                        android:textSize="@dimen/inputbox_text_size"
+                        android:inputType="textPassword"
+                        app:passwordToggleEnabled="true"
+                        app:passwordToggleTint="@color/inputColorGrey"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/inputbox_height"
+                        />
+                    <TextView
+                        android:textSize="14sp"
+                        android:textColor="#FF0000"
+                        android:text="Password is required"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <Button
+                    android:layout_marginTop="20dp"
+                    android:id="@+id/signInButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/inputbox_height"
+                    android:background="@drawable/button_selector"
+                    android:text="Sign in"
+                    android:textStyle="bold"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="@dimen/input_button_text_size" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="20dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="8dp"
+
+                android:text="@string/forgot_password_text"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="16sp" />
+
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

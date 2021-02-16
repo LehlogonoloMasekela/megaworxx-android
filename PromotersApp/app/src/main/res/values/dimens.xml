@@ -1,0 +1,26 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">8dp</dimen>
+    <dimen name="activity_vertical_margin">8dp</dimen>
+    <dimen name="nav_header_vertical_spacing">8dp</dimen>
+    <dimen name="nav_header_height">200dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="below_logo_text_size">24dp</dimen>
+    <dimen name="login_input_padding">5dp</dimen>
+    <dimen name="input_login_size">22sp</dimen>
+    <dimen name="megaworxx_icon_size">120dp</dimen>
+    <dimen name="inputbox_padding">10dp</dimen>
+    <dimen name="inputbox_drawable_padding">10dp</dimen>
+    <dimen name="inputbox_height">55dp</dimen>
+    <dimen name="inputbox_text_size">19sp</dimen>
+    <dimen name="input_button_text_size">16sp</dimen>
+    <dimen name="input_button_height">47dp</dimen>
+    <dimen name="home_screen_horizontal_padding">20dp</dimen>
+    <dimen name="home_text_huge_size_desc">24sp</dimen>
+    <dimen name="home_text_huge_size_value">30sp</dimen>
+    <dimen name="home_desc_vertical_margin">15dp</dimen>
+    <dimen name="home_value_vertical_margin">40dp</dimen>
+    <dimen name="card_home_vertical_margin">10dp</dimen>
+    <dimen name="card_home_horizontal_margin">4dp</dimen>
+    <dimen name="tab_button_height">50dp</dimen>
+</resources>
