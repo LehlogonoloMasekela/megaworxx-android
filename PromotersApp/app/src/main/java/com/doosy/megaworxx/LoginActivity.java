@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.doosy.megaworxx.entity.Promoter;
@@ -24,6 +25,7 @@ import com.doosy.megaworxx.ui.BaseActivity;
 import com.doosy.megaworxx.util.Constants;
 import com.doosy.megaworxx.util.validations.Validate;
 import com.doosy.megaworxx.viewmodel.PromoterViewModel;
+import com.doosy.megaworxx.viewmodel.StockViewModel;
 
 public class LoginActivity extends BaseActivity {
 
@@ -44,7 +46,7 @@ public class LoginActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signin);
-        promoterViewModel = ViewModelProviders.of(this).get(PromoterViewModel.class);
+        promoterViewModel = new ViewModelProvider(this).get(PromoterViewModel.class);
 
         init();
 

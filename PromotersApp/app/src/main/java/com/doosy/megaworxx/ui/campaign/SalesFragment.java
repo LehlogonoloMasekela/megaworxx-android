@@ -20,6 +20,7 @@ import com.doosy.megaworxx.adapter.SalesAdapter;
 import com.doosy.megaworxx.entity.Campaign;
 import com.doosy.megaworxx.entity.CampaignModel;
 import com.doosy.megaworxx.entity.Sales;
+import com.doosy.megaworxx.entity.Stock;
 import com.doosy.megaworxx.model.DataServerResponse;
 import com.doosy.megaworxx.model.PromoterSaleModel;
 import com.doosy.megaworxx.ui.BaseFragment;
@@ -68,9 +69,23 @@ public class SalesFragment extends BaseFragment {
         mCampaign = ((CampaignActivity)getActivity()).getCampaign();
     }
 
-    public void reloadData(){
+
+    public void loadData(){
         saleViewModel.fetchPromoterSale(setting.getToken(), campaignModel.getPromoterId(),
                 campaignModel.getCampaignId(), campaignModel.getCampaignLocationId());
+        mResponse = saleViewModel.getDataResponse();
+        mResponse.observe(getViewLifecycleOwner(), new Observer<DataServerResponse<Sales>>() {
+            @Override
+            public void onChanged(DataServerResponse<Sales> response) {
+
+                if(response != null && response.isSuccessful()){
+                    initRecyclerView(response.getDataList());
+                    mSalesAdapter.notifyDataSetChanged();
+                    Log.d(Constants.TAG, "Loading stock");
+                }
+
+            }
+        });
     }
 
     @Override
@@ -94,17 +109,8 @@ public class SalesFragment extends BaseFragment {
         if(mCampaign != null){
             campaignFragmentDate.setText(Util.formatDate(mCampaign.getDateCreated()));
         }
-        mResponse = saleViewModel.getDataResponse();
-        mResponse.observe(getViewLifecycleOwner(), new Observer<DataServerResponse<Sales>>() {
-            @Override
-            public void onChanged(DataServerResponse<Sales> response) {
 
-                if(response != null && response.isSuccessful()){
-                    initRecyclerView(response.getDataList());
-                }
-
-            }
-        });
+        loadData();
     }
 
     private void initViews(View view){

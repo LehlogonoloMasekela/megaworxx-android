@@ -7,9 +7,10 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.doosy.megaworxx.AppExecutors;
 import com.doosy.megaworxx.entity.Sales;
-import com.doosy.megaworxx.entity.Stock;
 import com.doosy.megaworxx.model.DataServerResponse;
 import com.doosy.megaworxx.model.PromoterSaleModel;
+import com.doosy.megaworxx.model.SaleModel;
+import com.doosy.megaworxx.model.ServerResponse;
 import com.doosy.megaworxx.request.ServiceGenerator;
 import com.doosy.megaworxx.util.Constants;
 
@@ -22,8 +23,10 @@ import retrofit2.Response;
 public class SaleApiClient {
     private static SaleApiClient instance;
 
-    private MutableLiveData<DataServerResponse<Sales>> dataResponse;
+    private MutableLiveData<DataServerResponse<Sales>> mSaleResponse;
+    private MutableLiveData<ServerResponse> mResponse;
     private SalesRunnable mSalesRunnable;
+    private SaveSaleRunnable mSaveSaleRunnable;
     private PromoterSaleRunnable mPromoterSaleRunnable;
 
     public static SaleApiClient getInstance(){
@@ -34,11 +37,16 @@ public class SaleApiClient {
     }
 
     private SaleApiClient(){
-        dataResponse = new MutableLiveData<>();
+        mResponse = new MutableLiveData<>();
+        mSaleResponse = new MutableLiveData<>();
     }
 
-    public LiveData<DataServerResponse<Sales>> getDataResponse(){
-        return dataResponse;
+    public LiveData<DataServerResponse<Sales>> getSaleResponse(){
+        return mSaleResponse;
+    }
+
+    public LiveData<ServerResponse> getResponse(){
+        return mResponse;
     }
 
     public void fetchSale(String token,PromoterSaleModel promoterSaleModel){
@@ -60,8 +68,69 @@ public class SaleApiClient {
 
     }
 
+    public void saveSale(String token, SaleModel saleModel){
+        mResponse = new MutableLiveData<>();
+        if(mSaveSaleRunnable != null){
+            mSaveSaleRunnable = null;
+        }
 
+        mSaveSaleRunnable = new SaveSaleRunnable(token, saleModel);
 
+        final Future handler = AppExecutors.getInstance().
+                getNetworkIO().submit(mSaveSaleRunnable);
+
+        AppExecutors.getInstance().getNetworkIO().schedule(new Runnable() {
+            @Override
+            public void run() {
+                handler.cancel(true);
+            }
+        }, Constants.NETWORK_TIMEOUT, TimeUnit.MILLISECONDS);
+
+    }
+
+    private class SaveSaleRunnable implements Runnable {
+        SaleModel mSaleModel;
+        String mToken;
+
+        private boolean cancelRequest = false;
+
+        public SaveSaleRunnable(String token, SaleModel saleModel){
+            this.cancelRequest = false;
+            this.mSaleModel = saleModel;
+            this.mToken = token;
+        }
+
+        @Override
+        public void run() {
+
+            try{
+
+                Response response = saveSaleCall(mToken, mSaleModel).execute();
+
+                if(cancelRequest){
+                    return;
+                }
+                Log.d(Constants.TAG,"Before if : "+response.body());
+                if(response.code() == 200){
+
+                    ServerResponse serverResponse = ((ServerResponse)(response.body()));
+
+                    if(serverResponse != null){
+                        mResponse.postValue(serverResponse);
+                        return;
+                    }
+                    Log.d(Constants.TAG,"Model: "+response.body());
+                }
+
+                mResponse.postValue(null);
+
+            }catch (Exception e){
+                Log.d(Constants.TAG,"Exception: " + e.fillInStackTrace());
+                mResponse.postValue(null);
+            }
+
+        }
+    }
     private class SalesRunnable implements Runnable {
         PromoterSaleModel mPromoterSaleModel;
         String mToken;
@@ -90,25 +159,25 @@ public class SaleApiClient {
                     DataServerResponse<Sales> serverResponse = ((DataServerResponse<Sales>)(response.body()));
 
                     if(serverResponse != null){
-                        dataResponse.postValue(serverResponse);
+                        mSaleResponse.postValue(serverResponse);
                         Log.d(Constants.TAG,"Array size: "+serverResponse.getDataList().size());
                         return;
                     }
                     Log.d(Constants.TAG,"Model: "+response.body());
                 }
 
-                dataResponse.postValue(null);
+                mSaleResponse.postValue(null);
 
             }catch (Exception e){
                 Log.d(Constants.TAG,"Exception: " + e.fillInStackTrace());
-                dataResponse.postValue(null);
+                mSaleResponse.postValue(null);
             }
 
         }
     }
 
     public void fetchPromoterSale(String token,String promoterId,String campaignId, String campaignLocationId){
-        dataResponse = new MutableLiveData<>();
+        mSaleResponse = new MutableLiveData<>();
 
         if(mPromoterSaleRunnable != null){
             mPromoterSaleRunnable = null;
@@ -160,20 +229,25 @@ public class SaleApiClient {
                     DataServerResponse<Sales> serverResponse = ((DataServerResponse<Sales>)(response.body()));
 
                     if(serverResponse != null){
-                        dataResponse.postValue(serverResponse);
+                        mSaleResponse.postValue(serverResponse);
                         return;
                     }
                     Log.d(Constants.TAG,"Promoter Stock Arrays Size: "+serverResponse.getDataList().size());
                 }
 
-                dataResponse.postValue(null);
+                mSaleResponse.postValue(null);
 
             }catch (Exception e){
                 Log.d(Constants.TAG,"Exception: " + e.fillInStackTrace());
-                dataResponse.postValue(null);
+                mSaleResponse.postValue(null);
             }
 
         }
+    }
+
+    private Call<ServerResponse> saveSaleCall(String token, SaleModel model){
+
+        return ServiceGenerator.getPromoterApi().saveCampaignSale(token, model);
     }
 
     private Call<DataServerResponse<Sales>> fetchSales(String token,PromoterSaleModel model){

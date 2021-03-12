@@ -49,7 +49,7 @@ public class StockItemApiClient {
         return mResponse;
     }
 
-    public void fetchItems(String token){
+    public void fetchStockItems(String token){
 
         if(mStockItemRunnable != null){
             mStockItemRunnable = null;
@@ -183,9 +183,6 @@ public class StockItemApiClient {
         return ServiceGenerator.getPromoterApi().fetchItems(token);
     }
     private Call<DataServerResponse<Stock>> getPromoterStocks(String token,String promoterId,String campaignId, String campaignLocationId){
-        Log.d(Constants.TAG, "promoterId: " + promoterId);
-        Log.d(Constants.TAG, "campaignId: " + campaignId);
-        Log.d(Constants.TAG, "campaignLocationId: " + campaignLocationId);
         return ServiceGenerator.getPromoterApi().getPromoterStocks(token, promoterId,campaignId,campaignLocationId);
     }
 

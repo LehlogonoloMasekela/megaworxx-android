@@ -24,7 +24,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 
 import com.doosy.megaworxx.R;
@@ -93,7 +93,7 @@ public class CampaignActivity extends BaseActivity implements View.OnClickListen
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_campaign_detail);
-        campaignViewModel = ViewModelProviders.of(this).get(CampaignViewModel.class);
+        campaignViewModel = new ViewModelProvider(this).get(CampaignViewModel.class);
         initViews();
 
         String key = getString(R.string.key_campaign_model);
@@ -395,12 +395,14 @@ public class CampaignActivity extends BaseActivity implements View.OnClickListen
         bundle.putSerializable(keyCampaign, mCampaign);
         bundle.putSerializable(keyCampaignModel, mCampaignModel);
 
+        String coordinates = mLocation.getLongitude() +","+ mLocation.getLatitude();
+        settings.saveCoordinates(coordinates);
+
         if(v.getId() == R.id.addFab){
             if(mCampaignTab == CampaignTab.Survey){
                 startActivity(new Intent(this, AddSurveyActivity.class));
             }else if(mCampaignTab == CampaignTab.Stock){
-                String coordinates = mLocation.getLongitude() +","+ mLocation.getLatitude();
-                settings.saveCoordinates(coordinates);
+
                 Intent intent = new Intent(this, AddStockActivity.class);
                 intent.putExtras(bundle);
                 startActivityForResult(intent, REQUEST_CODE_ADD_STOCK);
@@ -410,7 +412,6 @@ public class CampaignActivity extends BaseActivity implements View.OnClickListen
             }else if(mCampaignTab == CampaignTab.Sales){
 
                 Intent intent = new Intent(this, AddSalesActivity.class);
-
                 intent.putExtras(bundle);
                 startActivityForResult(intent, REQUEST_CODE_ADD_SALE);
             }

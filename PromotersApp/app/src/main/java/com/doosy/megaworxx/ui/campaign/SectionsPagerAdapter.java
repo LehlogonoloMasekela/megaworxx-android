@@ -10,9 +10,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.doosy.megaworxx.R;
-import com.doosy.megaworxx.ui.filter.FilterFragment;
-import com.doosy.megaworxx.ui.home.HomeFragment;
-import com.doosy.megaworxx.ui.profile.ProfileFragment;
 import com.doosy.megaworxx.util.Constants;
 
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
@@ -61,7 +58,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
             case 2:
                 if (mSurveyFragment == null) {
-                    mSurveyFragment = SurveyFragment.newInstance(0);
+                    mSurveyFragment = SurveyFragment.newInstance(2);
                 }
                 return mSurveyFragment;
 
@@ -80,11 +77,11 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         if(campaignTab == CampaignActivity.CampaignTab.Stock){
             if(mStockFragment != null){
-                mStockFragment.reloadData();
+                mStockFragment.loadData();
             }
         }else if(campaignTab == CampaignActivity.CampaignTab.Sales){
             if(mSalesFragment != null){
-                mSalesFragment.reloadData();
+                mSalesFragment.loadData();
             }
         }
 

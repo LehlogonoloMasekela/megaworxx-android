@@ -24,7 +24,8 @@ import retrofit2.Response;
 public class StockApiClient {
     private static StockApiClient instance;
 
-    private MutableLiveData<DataServerResponse<Stock>> dataResponse;
+    private MutableLiveData<DataServerResponse<Stock>> mCampaignStockResponse;
+    private MutableLiveData<DataServerResponse<Stock>> mCampaignPromoterStockResponse;
     private MutableLiveData<ServerResponse> mResponse;
     private StockRunnable mStockRunnable;
     private AddStockRunnable mAddStockRunnable;
@@ -38,19 +39,24 @@ public class StockApiClient {
     }
 
     private StockApiClient(){
-        dataResponse = new MutableLiveData<>();
         mResponse = new MutableLiveData<>();
+        mCampaignStockResponse = new MutableLiveData<>();
+        mCampaignPromoterStockResponse = new MutableLiveData<>();
     }
 
-    public LiveData<DataServerResponse<Stock>> getDataResponse(){
-        return dataResponse;
+    public LiveData<DataServerResponse<Stock>> getCampaignStock(){
+        return mCampaignStockResponse;
+    }
+
+    public LiveData<DataServerResponse<Stock>> getCampaignPromoterStock(){
+        return mCampaignPromoterStockResponse;
     }
 
     public LiveData<ServerResponse> getResponse(){
         return mResponse;
     }
 
-    public void fetchStock(String token,String campaignId){
+    public void fetchCampaignStock(String token, String campaignId){
         if(mStockRunnable != null){
             mStockRunnable = null;
         }
@@ -69,8 +75,7 @@ public class StockApiClient {
 
     }
 
-    public void fetchPromoterStock(String token,String promoterId,String campaignId, String campaignLocationId){
-        dataResponse = new MutableLiveData<>();
+    public void fetchCampaignPromoterStock(String token, String promoterId, String campaignId, String campaignLocationId){
 
         if(mPromoterStockRunnable != null){
             mPromoterStockRunnable = null;
@@ -136,18 +141,18 @@ public class StockApiClient {
                     DataServerResponse<Stock> serverResponse = ((DataServerResponse<Stock>)(response.body()));
 
                     if(serverResponse != null){
-                        dataResponse.postValue(serverResponse);
+                        mCampaignStockResponse.postValue(serverResponse);
                         Log.d(Constants.TAG,"Array size: "+serverResponse.getDataList().size());
                         return;
                     }
                     Log.d(Constants.TAG,"Model: "+response.body());
                 }
 
-                dataResponse.postValue(null);
+                mCampaignStockResponse.postValue(null);
 
             }catch (Exception e){
                 Log.d(Constants.TAG,"Exception: " + e.fillInStackTrace());
-                dataResponse.postValue(null);
+                mCampaignStockResponse.postValue(null);
             }
 
         }
@@ -229,17 +234,17 @@ public class StockApiClient {
                     DataServerResponse<Stock> serverResponse = ((DataServerResponse<Stock>)(response.body()));
 
                     if(serverResponse != null){
-                        dataResponse.postValue(serverResponse);
+                        mCampaignPromoterStockResponse.postValue(serverResponse);
                         return;
                     }
                     Log.d(Constants.TAG,"Promoter Stock Arrays Size: "+serverResponse.getDataList().size());
                 }
 
-                dataResponse.postValue(null);
+                mCampaignPromoterStockResponse.postValue(null);
 
             }catch (Exception e){
                 Log.d(Constants.TAG,"Exception: " + e.fillInStackTrace());
-                dataResponse.postValue(null);
+                mCampaignPromoterStockResponse.postValue(null);
             }
 
         }

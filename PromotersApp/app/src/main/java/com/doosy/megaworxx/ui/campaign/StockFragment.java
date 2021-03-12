@@ -63,7 +63,7 @@ public class StockFragment extends BaseFragment {
         campaignModel = ((CampaignActivity)getActivity()).getCampaignModel();
         if (campaignModel != null) {
             Log.d(Constants.TAG, campaignModel.toString());
-            stockViewModel.fetchPromoterStock(setting.getToken(), campaignModel.getPromoterId(),
+            stockViewModel.fetchCampaignPromoterStock(setting.getToken(), campaignModel.getPromoterId(),
                     campaignModel.getCampaignId(), campaignModel.getCampaignLocationId());
         }
 
@@ -71,10 +71,10 @@ public class StockFragment extends BaseFragment {
 
     }
 
-    public void reloadData(){
-        stockViewModel.fetchPromoterStock(setting.getToken(), campaignModel.getPromoterId(),
+    public void loadData(){
+        stockViewModel.fetchCampaignPromoterStock(setting.getToken(), campaignModel.getPromoterId(),
                 campaignModel.getCampaignId(), campaignModel.getCampaignLocationId());
-        mResponse = stockViewModel.getDataResponse();
+        mResponse = stockViewModel.getCampaignPromoterStocks();
         mResponse.observe(getViewLifecycleOwner(), new Observer<DataServerResponse<Stock>>() {
             @Override
             public void onChanged(DataServerResponse<Stock> response) {
@@ -109,19 +109,7 @@ public class StockFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         initViews(view);
 
-        mResponse = stockViewModel.getDataResponse();
-        mResponse.observe(getViewLifecycleOwner(), new Observer<DataServerResponse<Stock>>() {
-            @Override
-            public void onChanged(DataServerResponse<Stock> response) {
-
-                if(response != null && response.isSuccessful()){
-                    initRecyclerView(response.getDataList());
-                    mStockAdapter.notifyDataSetChanged();
-                    Log.d(Constants.TAG, "Loading stock");
-                }
-
-            }
-        });
+        loadData();
 
         if(mCampaign != null){
             campaignFragmentDate.setText(Util.formatDate(mCampaign.getDateCreated()));

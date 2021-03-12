@@ -9,6 +9,7 @@ import android.view.View;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.doosy.megaworxx.entity.Today;
@@ -20,6 +21,7 @@ import com.doosy.megaworxx.ui.home.HomeFragment;
 import com.doosy.megaworxx.util.Constants;
 import com.doosy.megaworxx.util.Util;
 import com.doosy.megaworxx.viewmodel.CampaignViewModel;
+import com.doosy.megaworxx.viewmodel.PromoterViewModel;
 import com.doosy.megaworxx.viewmodel.TokenViewModel;
 
 public class SplashActivity extends BaseActivity {
@@ -33,8 +35,8 @@ public class SplashActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mCampaignViewModel = ViewModelProviders.of(this).get(CampaignViewModel.class);
-        mTokenViewModel = ViewModelProviders.of(this).get(TokenViewModel.class);
+        mCampaignViewModel = new ViewModelProvider(this).get(CampaignViewModel.class);
+        mTokenViewModel = new ViewModelProvider(this).get(TokenViewModel.class);
         hideSystemUi();
         setContentView(R.layout.activity_splash);
 

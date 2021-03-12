@@ -17,6 +17,10 @@ public class ApiRepository<T> {
         mApiClient = new ApiClient<T>(callBack);
     }
 
+    public LiveData<DataServerResponse<T>> run(Call<T> callBack){
+        return getResponse();
+    }
+
     public LiveData<DataServerResponse<T>> getResponse(){
        return mApiClient.getResponse();
    }

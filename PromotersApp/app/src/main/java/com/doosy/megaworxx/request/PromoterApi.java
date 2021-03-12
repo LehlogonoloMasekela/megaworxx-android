@@ -11,6 +11,7 @@ import com.doosy.megaworxx.model.CheckModel;
 import com.doosy.megaworxx.model.ClientToken;
 import com.doosy.megaworxx.model.DataServerResponse;
 import com.doosy.megaworxx.model.LoginModel;
+import com.doosy.megaworxx.model.SaleModel;
 import com.doosy.megaworxx.model.ServerResponse;
 
 import java.util.List;
@@ -48,6 +49,10 @@ public interface PromoterApi {
     @Headers("Content-Type: application/json")
     @POST("Campaign/save-campaign-stock")
     Call<ServerResponse> saveCampaignStock(@Header("Authorization") String token, @Body List<AddStockModel> addStockModel);
+
+    @Headers("Content-Type: application/json")
+    @POST("Campaign/save-campaign-sale")
+    Call<ServerResponse> saveCampaignSale(@Header("Authorization") String token, @Body SaleModel saleModel);
 
     @GET("Campaign/get-campaign-stocks/{campaignid}")
     Call<DataServerResponse<Stock>> fetchCampaignStock(@Header("Authorization") String token, @Path("campaignid") String campaignId);

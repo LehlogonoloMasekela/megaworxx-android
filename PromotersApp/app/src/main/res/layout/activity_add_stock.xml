@@ -15,15 +15,14 @@
         android:theme="@style/AppTheme.AppBarOverlay"
         >
 
-        <androidx.appcompat.widget.Toolbar
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            app:title="@string/campaignName"
             app:navigationIcon="@drawable/ic_back"
-            app:title="Campaign name"
             android:background="@color/colorPrimary"
             app:titleTextColor="@color/colorWhite"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
             />
 
     </com.google.android.material.appbar.AppBarLayout>

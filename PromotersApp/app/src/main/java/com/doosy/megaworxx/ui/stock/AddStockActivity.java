@@ -2,7 +2,6 @@ package com.doosy.megaworxx.ui.stock;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -22,10 +21,9 @@ import com.doosy.megaworxx.model.AddStockModel;
 import com.doosy.megaworxx.model.DataServerResponse;
 import com.doosy.megaworxx.model.ServerResponse;
 import com.doosy.megaworxx.ui.BaseActivity;
-import com.doosy.megaworxx.util.Constants;
 import com.doosy.megaworxx.viewmodel.StockViewModel;
+import com.google.android.material.appbar.MaterialToolbar;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,12 +50,15 @@ public class AddStockActivity extends BaseActivity implements View.OnClickListen
         initViews();
 
         String keyCampaign = getString(R.string.key_campaign);
+        String keyCampaignModel = getString(R.string.key_campaign_model);
 
-        if(getIntent().hasExtra(keyCampaign)) {
+        if(getIntent().hasExtra(keyCampaign) && getIntent().hasExtra(keyCampaignModel)) {
             mCampaign = (Campaign) getIntent().getSerializableExtra(keyCampaign);
-
-            stockViewModel.fetchStock(settings.getToken(), mCampaign.getId());
-            mDataResponse = stockViewModel.getDataResponse();
+            mCampaignModel = (CampaignModel) getIntent().getSerializableExtra(keyCampaignModel);
+            MaterialToolbar toolbar = findViewById(R.id.toolbar);
+            toolbar.setTitle(mCampaignModel.getCampaignName());
+            stockViewModel.fetchCampaignStock(settings.getToken(), mCampaign.getId());
+            mDataResponse = stockViewModel.getCampaignStock();
 
             mDataResponse.observe(this, new Observer<DataServerResponse<Stock>>() {
                 @Override
@@ -70,11 +71,6 @@ public class AddStockActivity extends BaseActivity implements View.OnClickListen
             });
         }
 
-        String keyCampaignModel = getString(R.string.key_campaign_model);
-
-        if(getIntent().hasExtra(keyCampaignModel)) {
-            mCampaignModel = (CampaignModel) getIntent().getSerializableExtra(keyCampaignModel);
-        }
 
         btnSave.setOnClickListener(this);
         btnCancel.setOnClickListener(this);
@@ -91,8 +87,10 @@ public class AddStockActivity extends BaseActivity implements View.OnClickListen
         mAddStockModels = new ArrayList<>();
         for (Stock stock: mStocks) {
 
-            AddStockModel model = new AddStockModel(mCampaignModel.getPromoterId(), mCampaignModel.getCampaignDateId(), mCampaign.getId(),
-                    mCampaignModel.getCampaignLocationId(), settings.getsCoordinates(), stock.getStockItemId(),stock.getStockItem().getName());
+            AddStockModel model = new AddStockModel(mCampaignModel.getPromoterId(),
+                    mCampaignModel.getCampaignDateId(), mCampaign.getId(),
+                    mCampaignModel.getCampaignLocationId(), settings.getsCoordinates(),
+                    stock.getStockItemId(),stock.getStockItem().getName());
             mAddStockModels.add(model);
         }
         initRecyclerView();

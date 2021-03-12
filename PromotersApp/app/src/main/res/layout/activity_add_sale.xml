@@ -15,15 +15,14 @@
         android:theme="@style/AppTheme.AppBarOverlay"
         >
 
-        <androidx.appcompat.widget.Toolbar
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            app:title="@string/campaignName"
             app:navigationIcon="@drawable/ic_back"
-            app:title="Campaign name"
             android:background="@color/colorPrimary"
             app:titleTextColor="@color/colorWhite"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
             />
 
 
@@ -79,10 +78,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <EditText
-
+                        android:id="@+id/etDeviceId"
+                        android:inputType="number"
                         android:paddingStart="@dimen/edit_text_horizontal_padding"
                         android:paddingEnd="@dimen/edit_text_horizontal_padding"
-                        android:hint="IMEI Number"
+                        android:hint="IMEI"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/edit_text_height"
                         android:theme="@style/EditTextStyle"
@@ -98,7 +98,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <EditText
-
+                        android:id="@+id/etPrice"
                         android:paddingStart="@dimen/edit_text_horizontal_padding"
                         android:paddingEnd="@dimen/edit_text_horizontal_padding"
                         android:hint="Price"
