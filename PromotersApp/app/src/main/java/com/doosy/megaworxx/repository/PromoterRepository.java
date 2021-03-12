@@ -3,33 +3,33 @@ package com.doosy.megaworxx.repository;
 import androidx.lifecycle.LiveData;
 
 import com.doosy.megaworxx.api.PromoterApiClient;
+import com.doosy.megaworxx.api.StockApiClient;
 import com.doosy.megaworxx.entity.Promoter;
+import com.doosy.megaworxx.entity.Stock;
+import com.doosy.megaworxx.model.AddStockModel;
 import com.doosy.megaworxx.model.DataServerResponse;
 import com.doosy.megaworxx.model.LoginModel;
+import com.doosy.megaworxx.model.ServerResponse;
+
+import java.util.List;
 
 public class PromoterRepository {
-    private static PromoterRepository instance;
-    private final PromoterApiClient mPromoterApiClient;
+    private final PromoterApiClient promoterApiClient;
 
     public static PromoterRepository getInstance(){
-        if(instance == null){
-            instance = new PromoterRepository();
-        }
-
-        return  instance;
+        return new PromoterRepository();
     }
 
     private PromoterRepository(){
-        mPromoterApiClient = PromoterApiClient.getInstance();
+        promoterApiClient = PromoterApiClient.getInstance();
     }
 
-    public LiveData<DataServerResponse<Promoter>> getLoginResponse(){
-        return mPromoterApiClient.getLoginResponse();
+    public LiveData<DataServerResponse<Promoter>> getDataResponse(){
+        return promoterApiClient.getDataResponse();
+
     }
 
-    public void login(LoginModel loginModel){
-        mPromoterApiClient.login(loginModel);
+    public void login(LoginModel model) {
+        promoterApiClient.login( model);
     }
-
-
 }

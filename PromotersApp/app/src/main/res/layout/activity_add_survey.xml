@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+
+    android:background="@color/colorWhite"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        >
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="@drawable/ic_back"
+            app:title="Add Survey"
+            android:background="@color/colorPrimary"
+            app:titleTextColor="@color/colorWhite"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:paddingStart="@dimen/filter_horizontal_padding"
+            android:paddingTop="@dimen/filter_vertical_padding"
+            android:paddingEnd="@dimen/filter_horizontal_padding"
+            android:paddingBottom="@dimen/filter_vertical_padding"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/topHeader"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:textStyle="bold"
+                android:textSize="22sp"
+                android:textColor="@color/colorBlack"
+                android:text="@string/new_survey_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_marginTop="@dimen/top_vertical_margin"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/topHeader"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <EditText
+                    android:paddingStart="@dimen/edit_text_horizontal_padding"
+                    android:paddingEnd="@dimen/edit_text_horizontal_padding"
+                    android:hint="Field one"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/edit_text_height"
+                    android:theme="@style/EditTextStyle"
+                    />
+
+                <EditText
+                    android:layout_marginTop="@dimen/campaign_date_vertical_margin"
+                    android:paddingStart="@dimen/edit_text_horizontal_padding"
+                    android:paddingEnd="@dimen/edit_text_horizontal_padding"
+                    android:hint="Select caption..."
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/edit_text_height"
+                    android:theme="@style/EditTextStyle"
+                    />
+
+                <LinearLayout
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/campaign_date_vertical_margin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:textColor="@color/colorGrey"
+                        android:text="Checkbox option"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <CheckBox
+                        android:layout_width="28dp"
+                        android:layout_height="28dp" />
+                </LinearLayout>
+                <EditText
+                    android:layout_marginTop="@dimen/campaign_date_vertical_margin"
+                    android:paddingStart="@dimen/edit_text_horizontal_padding"
+                    android:paddingEnd="@dimen/edit_text_horizontal_padding"
+                    android:hint="Field one"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/edit_text_height"
+                    android:theme="@style/EditTextStyle"
+                    />
+                <EditText
+                    android:layout_marginTop="@dimen/campaign_date_vertical_margin"
+                    android:paddingStart="@dimen/edit_text_horizontal_padding"
+                    android:paddingEnd="@dimen/edit_text_horizontal_padding"
+                    android:hint="Select caption..."
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/edit_text_height"
+                    android:theme="@style/EditTextStyle"
+                    />
+                <EditText
+                    android:layout_marginTop="@dimen/campaign_date_vertical_margin"
+                    android:paddingStart="@dimen/edit_text_horizontal_padding"
+                    android:paddingEnd="@dimen/edit_text_horizontal_padding"
+                    android:hint="Select option..."
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/edit_text_height"
+                    android:theme="@style/EditTextStyle"
+                    />
+
+                <LinearLayout
+                    android:layout_marginTop="@dimen/bottom_button_vertical_margin"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <Button
+                        android:textColor="@color/button_color"
+                        android:background="@drawable/inverted_button_list"
+                        android:layout_marginStart="0dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_weight="1"
+                        android:text="Cancel"
+                        style="@style/ButtonStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <Button
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="0dp"
+                        android:layout_weight="1"
+                        android:text="Save"
+                        style="@style/ButtonStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -6,7 +6,7 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="windowActionBar">false</item>
+        <item name="windowActionBar">true</item>
         <item name="android:textColor">@color/colorPrimary</item>
         <item name="windowNoTitle">true</item>
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -20,6 +20,9 @@
         <item name="android:windowBackground">@null</item>
         <item name="appBarLayoutStyle">@style/AppTheme.AppBarOverlay</item>
         <item name="toolbarStyle">@style/AppTheme.Toolbar</item>
+        <item name="spinnerStyle">@style/Widget.AppCompat.Spinner</item>
+
+
     </style>
 
     <style name="AppTheme.Toolbar" parent="Widget.MaterialComponents.Toolbar">
@@ -62,6 +65,8 @@
         <item name="windowNoTitle">true</item>
         <item name="android:fontFamily">@font/pt_sans</item>
     </style>
+
+
 
     <style name="AppTheme.NoActionBar.FullScreen" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="windowActionBar">false</item>
@@ -138,6 +143,55 @@
         <item name="android:textColor">@color/colorWhite</item>
         <item name="android:background">@drawable/button_primary</item>
         <item name="android:textAllCaps">false</item>
+
+    </style>
+
+    <style name="ButtonStyleBorderless" parent="Widget.AppCompat.Button.Borderless.Colored">
+        <item name="android:fontFamily">@font/roboto</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:colorButtonNormal">@color/colorPrimaryDark</item>
+        <item name="android:translationZ">1dp</item>
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:background">@drawable/button_primary</item>
+        <item name="android:textAllCaps">false</item>
+
+    </style>
+
+    <style name="EditTextStyle" parent="@android:style/Widget.EditText">
+        <item name="background">@drawable/inputbox_border</item>
+        <item name="android:textColor">@color/colorBlack</item>
+        <item name="android:gravity">left</item>
+        <item name="android:height">40dp</item>
+        <item name="boxStrokeColor">@color/colorLightGrey</item>
+        <item name="boxStrokeWidth">5dp</item>
+        <item name="borderWidth">5dp</item>
+        <item name="android:editTextBackground">@drawable/inputbox_border</item>
+
+    </style>
+
+    <style name="MySpinner" parent="Widget.AppCompat.Spinner">
+        <item name="android:clickable">true</item>
+        <item name="android:textColor">@color/colorBlack</item>
+        <item name="android:textStyle">normal</item>
+        <item name="spinnerStyle">@style/Widget.AppCompat.Spinner</item>
+        <item name="android:background">@drawable/gradient_spinner</item>
+    </style>
+
+ <style name="AppTheme.ExposedDropdownMenu" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="android:clickable">true</item>
+        <item name="android:textColor">@color/colorBlack</item>
+        <item name="android:textStyle">normal</item>
+        <item name="spinnerStyle">@style/Widget.AppCompat.Spinner</item>
+        <item name="android:background">@drawable/gradient_spinner</item>
+    </style>
+
+    <style name="BottomNavigationView" parent="Theme.MaterialComponents">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorOnPrimary">@color/colorPrimaryDark</item>
+        <item name="iconTint">@color/colorGrey</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="labelVisibilityMode">unlabeled</item>
+        <item name="backgroundTint">@color/colorWhiteDark</item>
 
     </style>
 </resources>

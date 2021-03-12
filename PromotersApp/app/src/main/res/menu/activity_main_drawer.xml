@@ -6,14 +6,22 @@
     <group android:checkableBehavior="single">
         <item
             android:textColor="@color/colorBlack"
-            android:id="@+id/nav_message"
-            android:icon="@drawable/ic_email_24px"
-            android:title="@string/menu_messages" />
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_home"
+            android:title="@string/menu_home" />
+
+
         <item
             android:textColor="@color/colorBlack"
             android:id="@+id/nav_campaign"
             android:icon="@drawable/ic_campaign"
-            android:title="@string/menu_campaigns" />
+            android:title="@string/menu_campaign" />
+
+        <item
+            android:textColor="@color/colorBlack"
+            android:id="@+id/nav_message"
+            android:icon="@drawable/ic_email_24px"
+            android:title="@string/menu_message" />
 
 
     </group>

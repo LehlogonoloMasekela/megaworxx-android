@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout android:background="@color/colorWhite"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+   <ScrollView
+       android:orientation="vertical"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent">
+
+       <LinearLayout
+
+           android:paddingStart="@dimen/filter_horizontal_padding"
+           android:paddingTop="@dimen/filter_vertical_padding"
+           android:paddingEnd="@dimen/filter_horizontal_padding"
+           android:paddingBottom="@dimen/filter_vertical_padding"
+           android:orientation="vertical"
+           android:layout_width="match_parent"
+           android:layout_height="0dp">
+
+           <LinearLayout
+               android:id="@+id/profileNames"
+               app:layout_constraintTop_toTopOf="parent"
+               app:layout_constraintStart_toStartOf="parent"
+               app:layout_constraintEnd_toEndOf="parent"
+               android:layout_marginTop="10dp"
+               android:layout_gravity="center"
+               android:orientation="vertical"
+               android:gravity="center_horizontal|center_vertical"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content">
+               <LinearLayout
+                   android:gravity="center"
+                   android:background="@drawable/circle_background"
+                   android:layout_width="100dp"
+                   android:layout_height="100dp">
+                   <ImageView
+                       app:tint="@color/inputColorGrey"
+                       android:src="@drawable/ic_user_profile"
+                       android:layout_width="50dp"
+                       android:layout_height="50dp"/>
+               </LinearLayout>
+
+               <TextView
+                   android:layout_marginTop="8dp"
+                   android:textStyle="bold"
+                   android:textSize="18sp"
+                   android:textColor="@color/colorBlack"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:text="@string/nav_header_user_name" />
+           </LinearLayout>
+
+           <View
+               android:layout_marginTop="@dimen/profile_divider_vertical_margin"
+               android:layout_marginBottom="@dimen/profile_divider_vertical_margin"
+               style="@style/DividerH"
+               />
+
+           <LinearLayout
+               app:layout_constraintStart_toStartOf="parent"
+               app:layout_constraintEnd_toEndOf="parent"
+               android:id="@+id/userDetails"
+               android:orientation="vertical"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content">
+
+               <LinearLayout
+                   android:layout_marginBottom="10dp"
+                   android:gravity="center_vertical"
+                   android:orientation="horizontal"
+                   android:layout_width="match_parent"
+                   android:layout_height="@dimen/profile_item_height">
+
+                    <ImageView
+                        android:src="@drawable/ic_profile_name_icon"
+                        android:layout_width="@dimen/profile_item_icon_size"
+                        android:layout_height="@dimen/profile_item_icon_size"/>
+
+                   <TextView
+                       android:textSize="18sp"
+                       android:layout_marginStart="10dp"
+                       android:layout_marginEnd="10dp"
+                       android:textColor="@color/colorBlack"
+                       android:text="Calvin"
+                       android:layout_weight="1"
+                       android:ellipsize="end"
+                       android:maxLines="2"
+                       android:layout_width="0dp"
+                       android:layout_height="wrap_content"/>
+
+                   <ImageView
+                       android:padding="6dp"
+                       android:src="@drawable/ic_pencil"
+                       android:layout_width="@dimen/profile_edit_icon_size"
+                       android:layout_height="@dimen/profile_edit_icon_size"
+                   />
+
+               </LinearLayout>
+
+               <LinearLayout
+                   android:layout_marginBottom="10dp"
+                   android:gravity="center_vertical"
+                   android:orientation="horizontal"
+                   android:layout_width="match_parent"
+                   android:layout_height="@dimen/profile_item_height">
+
+                   <ImageView
+                       android:src="@drawable/ic_profile_name_icon"
+                       android:layout_width="@dimen/profile_item_icon_size"
+                       android:layout_height="@dimen/profile_item_icon_size"/>
+
+                   <TextView
+                       android:textSize="18sp"
+                       android:layout_marginStart="10dp"
+                       android:layout_marginEnd="10dp"
+                       android:textColor="@color/colorBlack"
+                       android:text="Masindi"
+                       android:layout_weight="1"
+                       android:ellipsize="end"
+                       android:maxLines="2"
+                       android:layout_width="0dp"
+                       android:layout_height="wrap_content"/>
+
+                   <ImageView
+                       android:padding="6dp"
+                       android:src="@drawable/ic_pencil"
+                       android:layout_width="@dimen/profile_edit_icon_size"
+                       android:layout_height="@dimen/profile_edit_icon_size"
+                       />
+
+               </LinearLayout>
+
+               <LinearLayout
+                   android:layout_marginBottom="10dp"
+                   android:gravity="center_vertical"
+                   android:orientation="horizontal"
+                   android:layout_width="match_parent"
+                   android:layout_height="@dimen/profile_item_height">
+
+                   <ImageView
+                       android:src="@drawable/ic_phone"
+                       android:layout_width="@dimen/profile_item_icon_size"
+                       android:layout_height="@dimen/profile_item_icon_size"/>
+
+                   <TextView
+                       android:textSize="18sp"
+                       android:layout_marginStart="10dp"
+                       android:layout_marginEnd="10dp"
+                       android:textColor="@color/colorBlack"
+                       android:text="(+277) 890 54327"
+                       android:layout_weight="1"
+                       android:ellipsize="end"
+                       android:maxLines="2"
+                       android:layout_width="0dp"
+                       android:layout_height="wrap_content"/>
+
+                   <ImageView
+                       android:padding="6dp"
+                       android:src="@drawable/ic_pencil"
+                       android:layout_width="@dimen/profile_edit_icon_size"
+                       android:layout_height="@dimen/profile_edit_icon_size"
+                       />
+
+               </LinearLayout>
+
+               <LinearLayout
+                   android:layout_marginBottom="10dp"
+                   android:gravity="center_vertical"
+                   android:orientation="horizontal"
+                   android:layout_width="match_parent"
+                   android:layout_height="@dimen/profile_item_height">
+
+                   <ImageView
+                       android:src="@drawable/ic_email"
+                       android:layout_width="@dimen/profile_item_icon_size"
+                       android:layout_height="@dimen/profile_item_icon_size"/>
+
+                   <TextView
+                       android:textSize="18sp"
+                       android:layout_marginStart="10dp"
+                       android:layout_marginEnd="10dp"
+                       android:textColor="@color/colorBlack"
+                       android:text="calvin@doosy.co.za"
+                       android:layout_weight="1"
+                       android:ellipsize="end"
+                       android:maxLines="2"
+                       android:layout_width="0dp"
+                       android:layout_height="wrap_content"/>
+
+                   <ImageView
+                       android:padding="6dp"
+                       android:src="@drawable/ic_pencil"
+                       android:layout_width="@dimen/profile_edit_icon_size"
+                       android:layout_height="@dimen/profile_edit_icon_size"
+                       />
+
+               </LinearLayout>
+
+               <LinearLayout
+                   android:layout_marginBottom="10dp"
+                   android:gravity="center_vertical"
+                   android:orientation="horizontal"
+                   android:layout_width="match_parent"
+                   android:layout_height="@dimen/profile_item_height">
+
+                   <ImageView
+                       android:src="@drawable/ic_lock"
+                       android:layout_width="@dimen/profile_item_icon_size"
+                       android:layout_height="@dimen/profile_item_icon_size"/>
+
+                   <TextView
+                       android:textSize="18sp"
+                       android:layout_marginStart="10dp"
+                       android:layout_marginEnd="10dp"
+                       android:textColor="@color/colorBlack"
+                       android:text="***********"
+                       android:layout_weight="1"
+                       android:ellipsize="end"
+                       android:maxLines="2"
+                       android:layout_width="0dp"
+                       android:layout_height="wrap_content"/>
+
+                   <ImageView
+                       android:padding="6dp"
+                       android:src="@drawable/ic_pencil"
+                       android:layout_width="@dimen/profile_edit_icon_size"
+                       android:layout_height="@dimen/profile_edit_icon_size"
+                       />
+
+               </LinearLayout>
+
+           </LinearLayout>
+
+           <View
+               android:layout_marginTop="@dimen/profile_divider_vertical_margin"
+               android:layout_marginBottom="@dimen/profile_divider_vertical_margin"
+               style="@style/DividerH"
+               />
+
+           <LinearLayout
+
+               android:focusable="true"
+               android:clickable="true"
+               android:background="@drawable/navigation_item_selector_background"
+               android:id="@+id/nav_sign_out"
+               android:gravity="center_vertical"
+               android:layout_width="match_parent"
+               android:layout_height="@dimen/profile_item_height"
+               android:orientation="horizontal"
+               >
+
+               <ImageView
+
+                   android:src="@drawable/ic_exit_2"
+                   android:layout_width="@dimen/profile_item_icon_size"
+                   android:layout_height="@dimen/profile_item_icon_size"
+                   app:tint="@color/colorPrimaryDark" />
+               <TextView
+                   android:textStyle="bold"
+                   android:textColor="@color/colorBlack"
+                   android:layout_marginStart="10dp"
+                   android:layout_marginEnd="10dp"
+                   android:textSize="14sp"
+                   android:id="@+id/logout"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:gravity="center"
+                   android:text="Sign out" />
+           </LinearLayout>
+       </LinearLayout>
+
+
+   </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

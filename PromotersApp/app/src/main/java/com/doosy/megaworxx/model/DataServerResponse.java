@@ -14,14 +14,27 @@ public class DataServerResponse<T> extends ServerResponse {
 
     public DataServerResponse(boolean isSuccessful, List<String> messages) {
         super(isSuccessful, messages);
+        this.DataList = new ArrayList<>();
     }
-    @SerializedName("dataList")
+
+    public DataServerResponse(T data) {
+        this.DataList = new ArrayList<>();
+        Data = data;
+    }
+
     @Expose()
-    private List<T> DataList;
+    private T Data;
 
     @SerializedName("data")
     @Expose()
-    private T Data;
+    private List<T> DataList;
+
+    @Expose()
+    private ClientToken clientToken;
+
+    public ClientToken getClientToken() {
+        return clientToken;
+    }
 
     public List<T> getDataList() {
         return DataList;

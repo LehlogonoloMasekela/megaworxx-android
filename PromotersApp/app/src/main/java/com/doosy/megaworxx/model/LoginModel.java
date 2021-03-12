@@ -1,16 +1,27 @@
 package com.doosy.megaworxx.model;
 
-public class LoginModel {
-    private String email;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
+
+public class LoginModel implements Serializable {
+
+    @SerializedName("username")
+    @Expose()
+    private String username;
+
+    @SerializedName("password")
+    @Expose()
     private String password;
 
     public LoginModel(String email, String password) {
-        this.email = email;
+        this.username = email;
         this.password = password;
     }
 
-    public String getEmail() {
-        return email;
+    public String getUsername() {
+        return username;
     }
     public String getPassword() {
         return password;

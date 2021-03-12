@@ -2,12 +2,7 @@ package com.doosy.megaworxx.request;
 
 import android.content.Context;
 
-import androidx.lifecycle.MutableLiveData;
-
 import com.doosy.megaworxx.R;
-import com.doosy.megaworxx.api.PromoterApiClient;
-import com.doosy.megaworxx.entity.Promoter;
-import com.doosy.megaworxx.model.DataServerResponse;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,7 +14,6 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 
-import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 

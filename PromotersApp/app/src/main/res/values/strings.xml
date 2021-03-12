@@ -7,8 +7,12 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
-    <string name="menu_messages">Messages</string>
-    <string name="menu_campaigns">Campaigns</string>
+    <string name="title_location_permission">Location</string>
+    <string name="text_location_permission">Application requires location permission to be granted to be able to check in and out.</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_message">Messages</string>
+    <string name="menu_campaign">Campaigns</string>
     <string name="menu_sign_out">Sign out</string>
 
     <string name="placeholder_email">calvin@doosy.co.za</string>
@@ -26,4 +30,54 @@
     <string name="tab_stock">Stock</string>
     <string name="tab_feedback">Feedback</string>
     <string name="tab_sales">Sales</string>
+
+
+    <string name="nav_action_home">Home</string>
+    <string name="nav_action_campaign">Campaigns</string>
+    <string name="nav_action_messages">Messages</string>
+    <string name="nav_action_profile">Profile</string>
+    <string name="campaign_survey_feedback_date">Date: 11/02/2021</string>
+    <string name="campaign_check_in_time">Check-in time: 12:38</string>
+    <string name="survey_item">Customer satisfaction survey</string>
+    <string name="feedback_item">Customer satisfaction feedback</string>
+    <string name="campaign_check_out_time">Check-out time: N/A</string>
+
+
+    <string name="action_add_survey">Add survey</string>
+    <string name="action_add_stock">Add stock</string>
+    <string name="action_add_feedback">Add feedback</string>
+    <string name="action_add_sale">Add sale</string>
+
+    <string name="new_survey_text">New Survey</string>
+    <string name="add_gadget_text">Add Gadget/Stock</string>
+    <string name="add_sales_text">Add Sale</string>
+    <string name="new_feedback_text">New Feedback</string>
+
+    <string name="key_campaign_model">campaignModel</string>
+    <string name="key_campaign">campaign</string>
+    <string name="key_survey">survey</string>
+    <string name="key_promoter">promoter</string>
+
+    <string-array name="check_success">
+        <item>Success</item>
+        <item>You have been successfully checked in.</item>
+        <item>You have been successfully checked out.</item>
+    </string-array>
+
+    <string-array name="check_error">
+        <item>Error</item>
+        <item>Something happened trying to check in, please try again later.</item>
+        <item>Something happened trying to check out, please try again later.</item>
+    </string-array>
+
+    <string name="stock_toolbar_text">Samsung J21 Promo at Menlyn</string>
+    <string name="message_dummy">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Diam phasellus vestibulum lorem sed risus ultricies tristique. Ultricies mi quis hendrerit dolor magna.</string>
+
+    <string-array name="client_token">
+        <item>client_credentials</item>
+        <item>VehicleManagementAPI</item>
+    </string-array>
+
+    <string name="txt_retry"> <u>Retry</u> </string>
+
 </resources>

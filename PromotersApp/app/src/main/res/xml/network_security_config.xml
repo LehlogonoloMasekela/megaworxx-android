@@ -5,9 +5,12 @@
         <trust-anchors>
             <certificates src="@raw/megaworxx_cer" />
         </trust-anchors>
+        <domain includeSubdomains="true">doosy.co.za</domain>
         <domain includeSubdomains="true">192.168.8.100</domain>
         <domain includeSubdomains="true">192.168.8.105</domain>
         <domain includeSubdomains="true">10.0.2.2</domain>
-        <domain includeSubdomains="true">media.masoft.co.za</domain>
+        <domain includeSubdomains="true">masoft.co.za</domain>
+        <domain includeSubdomains="true">https://megaworxx-api.masoft.co.za</domain>
+
     </domain-config>
 </network-security-config>

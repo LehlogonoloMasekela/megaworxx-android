@@ -1,7 +1,5 @@
 package com.doosy.megaworxx.api;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -12,7 +10,6 @@ import com.doosy.megaworxx.model.LoginModel;
 import com.doosy.megaworxx.request.ServiceGenerator;
 import com.doosy.megaworxx.util.Constants;
 
-import java.io.IOException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -20,36 +17,34 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 public class PromoterApiClient {
-
     private static PromoterApiClient instance;
-    private MutableLiveData<DataServerResponse<Promoter>> mLoginResponse;
-    private LoginRunnable mLoginRunnable;
+
+    private MutableLiveData<DataServerResponse<Promoter>> dataResponse;
+    private PromoterRunnable mPromoterRunnable;
+
 
     public static PromoterApiClient getInstance(){
-        if(instance == null){
-            instance = new PromoterApiClient();
-        }
-        return instance;
+        return new PromoterApiClient();
     }
 
     private PromoterApiClient(){
-        mLoginResponse = new MutableLiveData<>();
+        dataResponse = new MutableLiveData<>();
     }
 
-    public LiveData<DataServerResponse<Promoter>> getLoginResponse(){
-        return mLoginResponse;
+    public LiveData<DataServerResponse<Promoter>> getDataResponse(){
+        return dataResponse;
     }
-
 
     public void login(LoginModel loginModel){
-        if(mLoginRunnable != null){
-            mLoginRunnable = null;
+        dataResponse = new MutableLiveData<>();
+        if(mPromoterRunnable != null){
+            mPromoterRunnable = null;
         }
 
-        mLoginRunnable = new LoginRunnable( loginModel);
+        mPromoterRunnable = new PromoterRunnable(loginModel);
 
         final Future handler = AppExecutors.getInstance().
-                getNetworkIO().submit(mLoginRunnable);
+                getNetworkIO().submit(mPromoterRunnable);
 
         AppExecutors.getInstance().getNetworkIO().schedule(new Runnable() {
             @Override
@@ -60,15 +55,15 @@ public class PromoterApiClient {
 
     }
 
-    private class LoginRunnable implements Runnable {
 
-        LoginModel mLoginModel;
+    private class PromoterRunnable implements Runnable {
+      LoginModel model;
 
         private boolean cancelRequest = false;
 
-        public LoginRunnable(LoginModel loginModel){
+        public PromoterRunnable(LoginModel model){
             this.cancelRequest = false;
-            this.mLoginModel = loginModel;
+            this.model = model;
         }
 
         @Override
@@ -76,7 +71,7 @@ public class PromoterApiClient {
 
             try{
 
-                Response response = loginCall(mLoginModel).execute();
+                Response<DataServerResponse<Promoter>> response = loginCall(model).execute();
 
                 if(cancelRequest){
                     return;
@@ -84,31 +79,31 @@ public class PromoterApiClient {
 
                 if(response.code() == 200){
 
-                    DataServerResponse<Promoter> serverResponse = ((DataServerResponse<Promoter>)(response.body()));
+                    DataServerResponse<Promoter> promoterResponse = response.body();
 
-                    if(serverResponse != null && serverResponse.isSuccessful()){
-                        Log.d(Constants.TAG,"FirstName Data: "+serverResponse.getData().getFirstName());
-                        Log.d(Constants.TAG,"LastName Data: "+serverResponse.getData().getLastName());
-                        mLoginResponse.postValue(serverResponse);
-                        return;
+                    if(promoterResponse != null && promoterResponse.isSuccessful()){
+                        dataResponse.postValue(promoterResponse);
+
+                    }else{
+                        dataResponse.postValue(promoterResponse);
                     }
 
+                    return;
                 }
-                Log.d(Constants.TAG,"After 200 if status");
-                Log.d(Constants.TAG,"Server status: "+response.body());
 
-                mLoginResponse.postValue(null);
+                dataResponse.postValue(null);
 
             }catch (Exception e){
-                Log.d(Constants.TAG,"Exception: " + e.fillInStackTrace());
-                mLoginResponse.postValue(null);
+
+                dataResponse.postValue(null);
             }
 
         }
     }
 
-    private Call<DataServerResponse<Promoter>> loginCall(LoginModel loginModel){
-        return ServiceGenerator.getPromoterApi().login(loginModel);
+    private Call<DataServerResponse<Promoter>> loginCall(LoginModel model){
+        return ServiceGenerator.getPromoterApiAuth().login(model);
     }
+
 
 }

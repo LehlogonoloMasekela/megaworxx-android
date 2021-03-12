@@ -1,0 +1,29 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.myapplication.views.HomeActivity" >
+
+    <item android:id="@+id/menu_home"
+        android:title="@string/nav_action_home"
+        app:showAsAction="never"
+        android:icon="@drawable/ic_home"/>
+
+
+
+    <item
+        android:id="@+id/menu_campaigns"
+        android:title="@string/nav_action_campaign"
+        app:showAsAction="never"
+        android:icon="@drawable/ic_campaign"
+        />
+
+    <item android:id="@+id/menu_messages"
+        android:title="@string/nav_action_messages"
+        app:showAsAction="never"
+        android:icon="@drawable/ic_envelope"/>
+
+    <item android:id="@+id/menu_profile"
+        android:title="@string/nav_action_profile"
+        app:showAsAction="never"
+        android:icon="@drawable/ic_user_icon"/>
+</menu>

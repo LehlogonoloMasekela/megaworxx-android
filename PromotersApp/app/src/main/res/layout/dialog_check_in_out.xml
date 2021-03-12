@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:background="@color/colorWhite"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:padding="20dp">
+
+    <ImageView
+        android:id="@+id/imgIcon"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/ic_success_icon"
+        />
+
+    <TextView
+        android:id="@+id/tvHeader"
+        android:layout_marginTop="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Success"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:textColor="@color/colorBlack"
+        android:id="@+id/tvMessage"
+        android:layout_marginTop="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:text="You have been successfully checked in"
+        android:textSize="14sp"/>
+
+    <Button
+        android:id="@+id/btnOk"
+        android:layout_marginTop="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:text="ok"
+        android:textSize="16sp"
+        android:textColor="@color/colorWhite"
+        style="@style/ButtonStyleBorderless"
+        />
+
+</LinearLayout>

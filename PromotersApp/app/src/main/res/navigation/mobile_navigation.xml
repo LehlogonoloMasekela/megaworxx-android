@@ -3,18 +3,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_message">
+    app:startDestination="@+id/nav_home">
 
     <fragment
-        android:id="@+id/nav_message"
+        android:id="@+id/nav_home"
         android:name="com.doosy.megaworxx.ui.home.HomeFragment"
-        android:label="@string/menu_messages"
+        android:label="@string/menu_home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
+        android:id="@+id/nav_message"
+        android:name="com.doosy.megaworxx.ui.message.MessageFragment"
+        android:label="@string/menu_message"
+        tools:layout="@layout/fragment_message" />
+
+
+    <fragment
         android:id="@+id/nav_campaign"
-        android:name="com.doosy.megaworxx.ui.gallery.GalleryFragment"
-        android:label="@string/menu_campaigns"
-        tools:layout="@layout/fragment_gallery" />
+        android:name="com.doosy.megaworxx.ui.filter.FilterFragment"
+        android:label="@string/menu_campaign"
+        tools:layout="@layout/fragment_filter" />
+
+
 
 </navigation>

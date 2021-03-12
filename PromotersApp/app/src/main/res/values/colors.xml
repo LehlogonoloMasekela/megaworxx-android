@@ -4,13 +4,18 @@
     <color name="colorPrimaryDark">#2F86C1</color>
     <color name="colorPrimaryLight">#793F8BBF</color>
 
-    <color name="colorAccent">#03DAC5</color>
+    <color name="colorAccent">#0071BC</color>
     <color name="colorBlack">#000000</color>
     <color name="colorWhite">#FFFFFF</color>
+    <color name="colorWhiteCard">#79B1BBC3</color>
+    <color name="colorWhiteCardDark">#C4B1BBC3</color>
+    <color name="colorWhiteDark">#F1EDED</color>
     <color name="colorGrey">#858484</color>
     <color name="colorLightGrey">#A7A7A7</color>
     <color name="inputColorGrey">#7D7E7E</color>
     <color name="colorLightGrey2">#81858585</color>
+    <color name="colorGreen">#0FB700</color>
+    <color name="colorRed">#FF0000</color>
     <color name="colorActiveCampaign">#40BCF9</color>
     <color name="totalHoursWorked">#292244</color>
     <color name="textColorLink">#0066FF</color>

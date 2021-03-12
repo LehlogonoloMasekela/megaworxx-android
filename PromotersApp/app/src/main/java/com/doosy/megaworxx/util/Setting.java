@@ -15,8 +15,7 @@ public class Setting {
         None,
         WiFi,
         Mobile,
-        Both;
-
+        Both,
     }
 
     private Context mContext;
@@ -27,14 +26,18 @@ public class Setting {
 
     private final String IS_LOGGEDIN = "IS_LOGGEDIN";
     private final String TOKEN = "TOKEN";
+    private final String TOKEN_TIME = "TOKEN_TIME";
 
     //Player settings
     private final String CONNECTION_SETTINGS = "CONNECTION_SETTINGS";
     private final String USER_CONNECTION = "IS_BOTH";
     private String IS_WIFI = "IS_WIFI";
     private String IS_MOBILE = "IS_MOBILE";
+    private String USER_ID = "USER_ID";
+    private String TODAY_DATE = "TODAY_DATE";
+    private String COORDINATES = "COORDINATES";
     private final ConnectivityManager connectivityManager;
-    private final NetworkInfo netInfo;
+    private  NetworkInfo netInfo;
 
     private ConnectionType type;
     public Setting(Context mContext)
@@ -42,7 +45,7 @@ public class Setting {
         this.mContext = mContext;
         type = ConnectionType.None;
         connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-        netInfo = connectivityManager.getActiveNetworkInfo();
+
     }
 
 
@@ -82,10 +85,53 @@ public class Setting {
         editor.apply();
     }
 
+    public void saveCoordinates(String coordinates){
+        pref = mContext.getSharedPreferences(SETTINGS, Context.MODE_PRIVATE);
+        editor = pref.edit();
+        editor.putString(COORDINATES, coordinates);
+        editor.apply();
+    }
+
+    public String getsCoordinates(){
+        pref = mContext.getSharedPreferences(SETTINGS, Context.MODE_PRIVATE);
+        return pref.getString(COORDINATES,"");
+    }
+
+    public void setTokenAlive(int time){
+        pref = mContext.getSharedPreferences(SETTINGS, Context.MODE_PRIVATE);
+        editor = pref.edit();
+        editor.putInt(TOKEN_TIME, time);
+        editor.apply();
+    }
+
+    public void setUserId(String userId){
+        pref = mContext.getSharedPreferences(SETTINGS, Context.MODE_PRIVATE);
+        editor = pref.edit();
+        editor.putString(USER_ID, userId);
+        editor.apply();
+    }
+
+    public void setTodayDate(String date){
+        pref = mContext.getSharedPreferences(SETTINGS, Context.MODE_PRIVATE);
+        editor = pref.edit();
+        editor.putString(TODAY_DATE, date);
+        editor.apply();
+    }
+
+
+    public String getTodayDate(){
+        pref = mContext.getSharedPreferences(SETTINGS, Context.MODE_PRIVATE);
+        return pref.getString(TODAY_DATE,"");
+    }
 
     public String getToken(){
         pref = mContext.getSharedPreferences(SETTINGS, Context.MODE_PRIVATE);
-        return pref.getString(TOKEN,"none");
+        return "Bearer "+ pref.getString(TOKEN,"none");
+    }
+
+    public String getUserId(){
+        pref = mContext.getSharedPreferences(SETTINGS, Context.MODE_PRIVATE);
+        return pref.getString(USER_ID,"none");
     }
 
     public void setToken(String value){
@@ -95,9 +141,10 @@ public class Setting {
         editor.apply();
     }
 
-    public ConnectionType ConnectionType(){
-
-        if(netInfo != null && netInfo.getType() == ConnectivityManager.TYPE_WIFI && netInfo.getType() == ConnectivityManager.TYPE_MOBILE)
+    public ConnectionType getConnectionType(){
+        netInfo = connectivityManager.getActiveNetworkInfo();
+        if(netInfo != null && netInfo.getType() == ConnectivityManager.TYPE_WIFI &&
+                netInfo.getType() == ConnectivityManager.TYPE_MOBILE)
             type = ConnectionType.Both;
         else if(netInfo != null && netInfo.getType() == ConnectivityManager.TYPE_WIFI)
             type = ConnectionType.WiFi;
@@ -108,6 +155,7 @@ public class Setting {
     }
 
     public boolean isOnline() {
+        netInfo = connectivityManager.getActiveNetworkInfo();
         return (netInfo != null && netInfo.isConnected());
     }
 

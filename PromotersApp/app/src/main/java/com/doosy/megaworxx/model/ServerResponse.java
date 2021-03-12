@@ -31,6 +31,14 @@ public class ServerResponse {
         return messages;
     }
 
+    public void setSuccessful(boolean successful) {
+        isSuccessful = successful;
+    }
+
+    public void setMessages(List<String> messages) {
+        this.messages = messages;
+    }
+
     @Override
     public String toString() {
         String msg = "";

@@ -3,47 +3,130 @@ package com.doosy.megaworxx;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.doosy.megaworxx.entity.Promoter;
+import com.doosy.megaworxx.entity.Today;
+import com.doosy.megaworxx.model.ClientToken;
 import com.doosy.megaworxx.model.DataServerResponse;
-import com.doosy.megaworxx.model.LoginModel;
+import com.doosy.megaworxx.model.TodayCampaignModel;
 import com.doosy.megaworxx.ui.BaseActivity;
+import com.doosy.megaworxx.ui.home.HomeFragment;
 import com.doosy.megaworxx.util.Constants;
-import com.doosy.megaworxx.viewmodel.PromoterViewModel;
+import com.doosy.megaworxx.util.Util;
+import com.doosy.megaworxx.viewmodel.CampaignViewModel;
+import com.doosy.megaworxx.viewmodel.TokenViewModel;
 
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends BaseActivity {
 
-    private final int SPLASH_DISPLAY_LENGHT = 1000;
+    private final int SPLASH_DISPLAY_LENGTH = 1000;
+    private CampaignViewModel mCampaignViewModel;
+    private LiveData<DataServerResponse<ClientToken>> mTokenResponse;
+    private LiveData<DataServerResponse<Today>> mResponse;
+
+    private TokenViewModel mTokenViewModel;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        mCampaignViewModel = ViewModelProviders.of(this).get(CampaignViewModel.class);
+        mTokenViewModel = ViewModelProviders.of(this).get(TokenViewModel.class);
         hideSystemUi();
         setContentView(R.layout.activity_splash);
 
-        new Handler().postDelayed(new Runnable() {
+        if(!settings.isOnline()){
+            navigateToError();
+            return;
+        }
 
+        if(mTokenTimer.isTokenAlive()){
+            getConfig();
+        }else{
+            getToken();
+        }
+
+    }
+
+    private void getToken(){
+
+        mTokenViewModel.processApi();
+        mTokenResponse = mTokenViewModel.getResponse();
+
+        mTokenResponse.observe(this, new Observer<DataServerResponse<ClientToken>>() {
             @Override
-            public void run() {
-                Intent mainIntent = new Intent(SplashActivity.this,
-                        LoginActivity.class);
-                startActivity(mainIntent);
-                finish();
-            }
+            public void onChanged(DataServerResponse<ClientToken> response) {
+                if(response != null && response.getData() != null){
+                    //Store token and update time to expire
+                    String token = response.getData().getAccessToken();
+                    settings.setToken(token);
+                    mTokenTimer.setTime(2);
+                    getConfig();
 
-        }, SPLASH_DISPLAY_LENGHT);
+                }else{
+                    //Implement messages when the token was not retrieved
+                    // Log.d(Constants.TAG, "A huna token yo waniwaho.");
+                }
+            }
+        });
+    }
+
+
+
+    private void getConfig(){
+        mCampaignViewModel.fetchTodayDate(settings.getToken());
+        subscribe();
+    }
+
+    private void navigateToNextScreen(){
+        Intent mainIntent = new Intent(SplashActivity.this,
+                LoginActivity.class);
+
+        if(settings.isLoggedIn()){
+            mainIntent = new Intent(SplashActivity.this,
+                    HomeActivity.class);
+        }
+        startActivity(mainIntent);
+        finish();
+    }
+
+    private void navigateToError(){
+        Intent mainIntent = new Intent(SplashActivity.this,
+                ErrorActivity.class);
+        startActivity(mainIntent);
+        finish();
+    }
+
+    private void subscribe() {
+        mCampaignViewModel.fetchTodayDate(settings.getToken());
+        mResponse = mCampaignViewModel.getTodayResponse();
+
+        mResponse.observe(this, new Observer<DataServerResponse<Today>>() {
+            @Override
+            public void onChanged(DataServerResponse<Today> response) {
+
+                mResponse.removeObserver(this);
+                if(mResponse.hasActiveObservers()){
+                    mResponse.removeObservers(SplashActivity.this);
+                }
+
+                if(response == null){
+                    Log.d(Constants.TAG, "No date:");
+                    return;
+                }
+
+                if(response.isSuccessful()){
+                    Today today = response.getData();
+
+                    settings.setTodayDate(today.getDate());
+                    navigateToNextScreen();
+                }
+
+            }
+        });
     }
 
     @SuppressLint("InlineApi")

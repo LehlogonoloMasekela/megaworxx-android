@@ -1,6 +1,7 @@
 package com.doosy.megaworxx.ui;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -14,7 +15,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.doosy.megaworxx.R;
+import com.doosy.megaworxx.util.Constants;
 import com.doosy.megaworxx.util.Setting;
+import com.doosy.megaworxx.util.TokenTimer;
 
 public abstract class BaseActivity  extends AppCompatActivity {
 
@@ -22,14 +25,19 @@ public abstract class BaseActivity  extends AppCompatActivity {
     private FrameLayout frameLayout;
     private ConstraintLayout constraintLayout;
 
-    private TextView txtMessage;
+    private LinearLayout successLayout;
+    private TextView tvSuccessMessage;
     private LinearLayout errorLayout;
+    private TextView tvErrorMessage;
 
     protected Setting settings;
+    protected TokenTimer mTokenTimer;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         settings = new Setting(this);
+        mTokenTimer = new TokenTimer(this);
         super.onCreate(savedInstanceState);
     }
 
@@ -42,13 +50,63 @@ public abstract class BaseActivity  extends AppCompatActivity {
         mProgressBar = constraintLayout.findViewById(R.id.progress_bar);
         getLayoutInflater().inflate(layoutResID, frameLayout, true);
         super.setContentView(constraintLayout);
+        initViews();
+    }
+
+    private void initViews(){
+        successLayout = constraintLayout.findViewById(R.id.successLayout);
+        tvSuccessMessage = constraintLayout.findViewById(R.id.tvSuccessMessage);
+        errorLayout = constraintLayout.findViewById(R.id.errorLayout);
+        tvErrorMessage = constraintLayout.findViewById(R.id.tvErrorMessage);
+    }
+
+    private void resetAll(){
+        errorLayout.setVisibility(View.GONE);
+        successLayout.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
+        frameLayout.setVisibility(View.VISIBLE);
+    }
+
+    public void showNoInternet(){
+        resetAll();
+        frameLayout.setVisibility(View.GONE);
+    }
+
+    public void showError(String errorMsg){
+        resetAll();
+        tvErrorMessage.setText(errorMsg);
+        errorLayout.setVisibility(View.VISIBLE);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                errorLayout.setVisibility(View.GONE);
+            }
+        }, Constants.MESSAGE_TIMEOUT);
 
     }
 
-    public void showLoading(boolean isLoading){
-        Log.d("masoft", isLoading ? "Yes" : "No");
-        mProgressBar.setVisibility(isLoading ? View.VISIBLE : View.INVISIBLE);
-        frameLayout.setVisibility(isLoading ? View.GONE : View.VISIBLE);
+    public void showSuccess(String successMessage){
+        resetAll();
+        tvSuccessMessage.setText(successMessage);
+        successLayout.setVisibility(View.VISIBLE);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                successLayout.setVisibility(View.GONE);
+            }
+        }, Constants.MESSAGE_TIMEOUT);
+    }
+
+    public void showLoading(){
+        resetAll();
+        mProgressBar.setVisibility(View.VISIBLE);
+        frameLayout.setVisibility(View.GONE);
+    }
+
+    public void hideLoading(){
+        resetAll();
+        mProgressBar.setVisibility(View.GONE);
+        frameLayout.setVisibility(View.VISIBLE);
     }
 
     public void showToast(String message){
@@ -56,7 +114,7 @@ public abstract class BaseActivity  extends AppCompatActivity {
     }
 
     public boolean isConnected(){
-        return  settings.ConnectionType() != Setting.ConnectionType.None;
+        return  settings.getConnectionType() != Setting.ConnectionType.None;
     }
 
 }
