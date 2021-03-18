@@ -22,6 +22,15 @@ public class Promoter implements Serializable {
     @Expose()
     private String email;
 
+    @SerializedName("idNumber")
+    @Expose()
+    private String idNumber;
+
+
+    @SerializedName("phone")
+    @Expose()
+    private String phone;
+
     @SerializedName("token")
     @Expose()
     private String token;
@@ -64,5 +73,25 @@ public class Promoter implements Serializable {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getIdNumber() {
+        return idNumber;
+    }
+
+    public void setIdNumber(String idNumber) {
+        this.idNumber = idNumber;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getFullName(){
+        return firstName +" "+ surname;
     }
 }

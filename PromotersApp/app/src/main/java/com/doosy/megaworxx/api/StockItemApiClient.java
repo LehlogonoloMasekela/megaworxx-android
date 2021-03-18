@@ -6,8 +6,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.doosy.megaworxx.AppExecutors;
-import com.doosy.megaworxx.entity.Stock;
 import com.doosy.megaworxx.entity.StockItem;
+import com.doosy.megaworxx.entity.StockSaleBase;
 import com.doosy.megaworxx.model.AddStockModel;
 import com.doosy.megaworxx.model.DataServerResponse;
 import com.doosy.megaworxx.model.ServerResponse;
@@ -182,7 +182,7 @@ public class StockItemApiClient {
     private Call<DataServerResponse<StockItem>> fetchItemCall(String token){
         return ServiceGenerator.getPromoterApi().fetchItems(token);
     }
-    private Call<DataServerResponse<Stock>> getPromoterStocks(String token,String promoterId,String campaignId, String campaignLocationId){
+    private Call<DataServerResponse<StockSaleBase>> getPromoterStocks(String token, String promoterId, String campaignId, String campaignLocationId){
         return ServiceGenerator.getPromoterApi().getPromoterStocks(token, promoterId,campaignId,campaignLocationId);
     }
 

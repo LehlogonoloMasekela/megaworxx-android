@@ -2,6 +2,7 @@ package com.doosy.megaworxx.ui.stock;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -16,11 +17,12 @@ import com.doosy.megaworxx.R;
 import com.doosy.megaworxx.adapter.AddStockAdapter;
 import com.doosy.megaworxx.entity.Campaign;
 import com.doosy.megaworxx.entity.CampaignModel;
-import com.doosy.megaworxx.entity.Stock;
+import com.doosy.megaworxx.entity.StockSaleBase;
 import com.doosy.megaworxx.model.AddStockModel;
 import com.doosy.megaworxx.model.DataServerResponse;
 import com.doosy.megaworxx.model.ServerResponse;
 import com.doosy.megaworxx.ui.BaseActivity;
+import com.doosy.megaworxx.util.Constants;
 import com.doosy.megaworxx.viewmodel.StockViewModel;
 import com.google.android.material.appbar.MaterialToolbar;
 
@@ -30,11 +32,11 @@ import java.util.List;
 public class AddStockActivity extends BaseActivity implements View.OnClickListener {
 
     private StockViewModel stockViewModel;
-    private LiveData<DataServerResponse<Stock>> mDataResponse;
+    private LiveData<DataServerResponse<StockSaleBase>> mDataResponse;
     private LiveData<ServerResponse> mResponse;
     private Campaign mCampaign;
     private CampaignModel mCampaignModel;
-    private List<Stock> mStocks;
+    private List<StockSaleBase> mStocks;
     private List<AddStockModel> mAddStockModels;
 
     private RecyclerView recyclerViewStock;
@@ -60,9 +62,9 @@ public class AddStockActivity extends BaseActivity implements View.OnClickListen
             stockViewModel.fetchCampaignStock(settings.getToken(), mCampaign.getId());
             mDataResponse = stockViewModel.getCampaignStock();
 
-            mDataResponse.observe(this, new Observer<DataServerResponse<Stock>>() {
+            mDataResponse.observe(this, new Observer<DataServerResponse<StockSaleBase>>() {
                 @Override
-                public void onChanged(DataServerResponse<Stock> response) {
+                public void onChanged(DataServerResponse<StockSaleBase> response) {
                     if(response != null && response.isSuccessful()){
                         mStocks = response.getDataList();
                         toAddStockModel();
@@ -85,13 +87,14 @@ public class AddStockActivity extends BaseActivity implements View.OnClickListen
     private void toAddStockModel(){
         if(mStocks == null) return;
         mAddStockModels = new ArrayList<>();
-        for (Stock stock: mStocks) {
+        for (StockSaleBase stock: mStocks) {
 
             AddStockModel model = new AddStockModel(mCampaignModel.getPromoterId(),
                     mCampaignModel.getCampaignDateId(), mCampaign.getId(),
                     mCampaignModel.getCampaignLocationId(), settings.getsCoordinates(),
                     stock.getStockItemId(),stock.getStockItem().getName());
             mAddStockModels.add(model);
+            Log.d(Constants.TAG, "StockId: " +stock.getStockItem().getId());
         }
         initRecyclerView();
     }

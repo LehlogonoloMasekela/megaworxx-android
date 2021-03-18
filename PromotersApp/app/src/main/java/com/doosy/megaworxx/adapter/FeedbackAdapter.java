@@ -2,6 +2,7 @@ package com.doosy.megaworxx.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.doosy.megaworxx.R;
 import com.doosy.megaworxx.entity.Feedback;
-import com.doosy.megaworxx.ui.campaign.CampaignActivity;
+import com.doosy.megaworxx.ui.ViewAnswersActivity;
+import com.doosy.megaworxx.util.QuestionnaireType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,15 +43,23 @@ public class FeedbackAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         final Feedback feedback = mFeedbacks.get(position);
 
-        String displayName = mContext.getApplicationContext().getResources().getString(R.string.feedback_item);
-        ((ViewHolder)holder).tvDisplayName.setText(displayName);
+        ((ViewHolder)holder).tvDisplayName.setText(feedback.getCustomerName());
         ((ViewHolder)holder).imgItemIcon.setImageResource(R.drawable.ic_feedback_icon);
         ((ViewHolder)holder).imgActionIcon.setImageResource(R.drawable.ic_more);
 
         ((ViewHolder)holder).cardItemMainLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((CampaignActivity)mContext).viewDetail(CampaignActivity.CampaignTab.Feedback);
+                //((CampaignActivity)mContext).viewDetail(CampaignActivity.CampaignTab.Feedback);
+                String keyFormId = mContext.getString(R.string.key_form_id);
+                String keyQuestionnaireType = mContext.getString(R.string.key_campaign_page_type);
+
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(keyQuestionnaireType, QuestionnaireType.FeedBack);
+                bundle.putString(keyFormId, feedback.getId());
+                Intent intent = new Intent(mContext, ViewAnswersActivity.class);
+                intent.putExtras(bundle);
+                mContext.startActivity(intent);
             }
         });
     }

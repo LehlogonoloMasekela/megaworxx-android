@@ -1,11 +1,7 @@
 package com.doosy.megaworxx.ui.campaign;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,18 +10,16 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.doosy.megaworxx.R;
 import com.doosy.megaworxx.adapter.StockAdapter;
 import com.doosy.megaworxx.entity.Campaign;
 import com.doosy.megaworxx.entity.CampaignModel;
-import com.doosy.megaworxx.entity.Stock;
+import com.doosy.megaworxx.entity.StockSaleBase;
 import com.doosy.megaworxx.model.DataServerResponse;
+import com.doosy.megaworxx.model.StatusModel;
 import com.doosy.megaworxx.ui.BaseFragment;
-import com.doosy.megaworxx.util.Constants;
 import com.doosy.megaworxx.util.Util;
 import com.doosy.megaworxx.viewmodel.StockViewModel;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,16 +28,14 @@ import java.util.List;
  */
 public class StockFragment extends BaseFragment {
 
-    private static final String ARG_CAMPAIGN_ID = "campaign_id";
     private Campaign mCampaign;
-    private List<Stock> mStocks = new ArrayList<>();
+    private List<StockSaleBase> mStocks = new ArrayList<>();
 
     private RecyclerView mRecyclerviewStock;
-    private TextView campaignFragmentDate;
     private StockAdapter mStockAdapter;
 
     private StockViewModel stockViewModel;
-    private LiveData<DataServerResponse<Stock>> mResponse;
+    private LiveData<DataServerResponse<StockSaleBase>> mResponse;
     private CampaignModel campaignModel;
 
     public StockFragment(){
@@ -61,42 +53,27 @@ public class StockFragment extends BaseFragment {
         stockViewModel = new ViewModelProvider(this).get(StockViewModel.class);
 
         campaignModel = ((CampaignActivity)getActivity()).getCampaignModel();
-        if (campaignModel != null) {
-            Log.d(Constants.TAG, campaignModel.toString());
-            stockViewModel.fetchCampaignPromoterStock(setting.getToken(), campaignModel.getPromoterId(),
-                    campaignModel.getCampaignId(), campaignModel.getCampaignLocationId());
-        }
-
         mCampaign = ((CampaignActivity)getActivity()).getCampaign();
-
     }
 
     public void loadData(){
+        showLoading();
         stockViewModel.fetchCampaignPromoterStock(setting.getToken(), campaignModel.getPromoterId(),
                 campaignModel.getCampaignId(), campaignModel.getCampaignLocationId());
         mResponse = stockViewModel.getCampaignPromoterStocks();
-        mResponse.observe(getViewLifecycleOwner(), new Observer<DataServerResponse<Stock>>() {
+        mResponse.observe(getViewLifecycleOwner(), new Observer<DataServerResponse<StockSaleBase>>() {
             @Override
-            public void onChanged(DataServerResponse<Stock> response) {
-
+            public void onChanged(DataServerResponse<StockSaleBase> response) {
+                hideLoading();
                 if(response != null && response.isSuccessful()){
 
                     initRecyclerView(response.getDataList());
                     mStockAdapter.notifyDataSetChanged();
-                    Log.d(Constants.TAG, "Loading stock");
+                    displayStatus();
                 }
 
             }
         });
-    }
-
-    @Override
-    public View onCreateView(
-            @NonNull LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_campaign_tab, container, false);
-
-        return root;
     }
 
     @Override
@@ -108,20 +85,26 @@ public class StockFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initViews(view);
-
         loadData();
 
         if(mCampaign != null){
-            campaignFragmentDate.setText(Util.formatDate(mCampaign.getDateCreated()));
+            String date = getActivity().getString(R.string.campaign_date,
+                    Util.formatDate(mCampaign.getDateCreated()) );
+            displayCampaignDate(date);
         }
+
+    }
+
+    public void displayStatus(){
+        StatusModel statusModel = ((CampaignActivity)getActivity()).getStatusModel();
+        displayStatus(statusModel);
     }
 
     private void initViews(View view){
         mRecyclerviewStock = view.findViewById(R.id.recyclerViewCampaign);
-        campaignFragmentDate = view.findViewById(R.id.campaignFragmentDate);
     }
 
-    private void initRecyclerView(List<Stock> stocks){
+    private void initRecyclerView(List<StockSaleBase> stocks){
 
         mRecyclerviewStock.setLayoutManager(new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.VERTICAL, false));

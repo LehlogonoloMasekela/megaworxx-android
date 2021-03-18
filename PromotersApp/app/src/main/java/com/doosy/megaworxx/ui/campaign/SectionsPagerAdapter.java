@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.doosy.megaworxx.R;
+import com.doosy.megaworxx.model.StatusModel;
 import com.doosy.megaworxx.util.Constants;
 
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
@@ -26,7 +27,6 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
             R.string.tab_sales,
             R.string.tab_survey,
             R.string.tab_feedback,
-
     };
 
     private final Context mContext;
@@ -38,9 +38,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        Log.d(Constants.TAG, "Inside Pager Adapter: " + position);
-        // getItem is called to instantiate the fragment for the given page.
-        // Return a PlaceholderFragment (defined as a static inner class below).
+
         switch (position) {
             case 0:
 
@@ -52,19 +50,19 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
             case 1:
 
                 if (mSalesFragment == null) {
-                    mSalesFragment = SalesFragment.newInstance(1);
+                    mSalesFragment = SalesFragment.newInstance();
                 }
                 return mSalesFragment;
 
             case 2:
                 if (mSurveyFragment == null) {
-                    mSurveyFragment = SurveyFragment.newInstance(2);
+                    mSurveyFragment = SurveyFragment.newInstance();
                 }
                 return mSurveyFragment;
 
             case 3:
                 if (mFeedbackFragment == null) {
-                    mFeedbackFragment = FeedbackFragment.newInstance(3);
+                    mFeedbackFragment = FeedbackFragment.newInstance();
                 }
                 return mFeedbackFragment;
 
@@ -82,6 +80,14 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         }else if(campaignTab == CampaignActivity.CampaignTab.Sales){
             if(mSalesFragment != null){
                 mSalesFragment.loadData();
+            }
+        }else if(campaignTab == CampaignActivity.CampaignTab.Feedback){
+            if(mFeedbackFragment != null){
+                mFeedbackFragment.loadData();
+            }
+        }else if(campaignTab == CampaignActivity.CampaignTab.Survey){
+            if(mSurveyFragment != null){
+                mSurveyFragment.loadData();
             }
         }
 

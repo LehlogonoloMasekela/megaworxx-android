@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout
-
+    android:id="@+id/mainLayout"
     android:background="@color/colorWhite"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -15,17 +15,15 @@
         android:theme="@style/AppTheme.AppBarOverlay"
         >
 
-        <androidx.appcompat.widget.Toolbar
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            app:title="@string/add_feedback_title"
             app:navigationIcon="@drawable/ic_back"
-            app:title="Add Feedback"
             android:background="@color/colorPrimary"
             app:titleTextColor="@color/colorWhite"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
             />
-
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
@@ -47,14 +45,13 @@
                 android:textStyle="bold"
                 android:textSize="22sp"
                 android:textColor="@color/colorBlack"
-                android:text="@string/new_feedback_text"
+                android:text="@string/new_feedback_header"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
-
             <LinearLayout
                 android:orientation="vertical"
-                android:layout_marginTop="@dimen/top_vertical_margin"
+                android:layout_marginTop="@dimen/form_top_vertical_margin"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -62,68 +59,40 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <EditText
-                    android:paddingStart="@dimen/edit_text_horizontal_padding"
-                    android:paddingEnd="@dimen/edit_text_horizontal_padding"
-                    android:hint="Field one"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/edit_text_height"
-                    android:theme="@style/EditTextStyle"
-                    />
-
-                <EditText
-                    android:layout_marginTop="@dimen/campaign_date_vertical_margin"
-                    android:paddingStart="@dimen/edit_text_horizontal_padding"
-                    android:paddingEnd="@dimen/edit_text_horizontal_padding"
-                    android:hint="Select caption..."
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/edit_text_height"
-                    android:theme="@style/EditTextStyle"
-                    />
-
                 <LinearLayout
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="@dimen/campaign_date_vertical_margin"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintEnd_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-                    <TextView
-                        android:textColor="@color/colorGrey"
-                        android:text="Checkbox option"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
 
-                    <CheckBox
-                        android:layout_width="28dp"
-                        android:layout_height="28dp" />
+                    <TextView
+                        android:text="Customer name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/QuestionForm"
+                        />
+
+                    <EditText
+                        android:id="@+id/etCustomer"
+                        android:layout_marginTop="10dp"
+                        android:paddingStart="@dimen/edit_text_horizontal_padding"
+                        android:paddingEnd="@dimen/edit_text_horizontal_padding"
+                        android:hint="Name"
+                        android:layout_width="match_parent"
+                        android:minHeight="@dimen/edit_text_height"
+                        android:layout_height="wrap_content"
+                        android:theme="@style/EditTextStyle"
+                        />
+
                 </LinearLayout>
-                <EditText
-                    android:layout_marginTop="@dimen/campaign_date_vertical_margin"
-                    android:paddingStart="@dimen/edit_text_horizontal_padding"
-                    android:paddingEnd="@dimen/edit_text_horizontal_padding"
-                    android:hint="Field one"
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/mRecyclerviewQuestions"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/edit_text_height"
-                    android:theme="@style/EditTextStyle"
-                    />
-                <EditText
-                    android:layout_marginTop="@dimen/campaign_date_vertical_margin"
-                    android:paddingStart="@dimen/edit_text_horizontal_padding"
-                    android:paddingEnd="@dimen/edit_text_horizontal_padding"
-                    android:hint="Select caption..."
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/edit_text_height"
-                    android:theme="@style/EditTextStyle"
-                    />
-                <EditText
-                    android:layout_marginTop="@dimen/campaign_date_vertical_margin"
-                    android:paddingStart="@dimen/edit_text_horizontal_padding"
-                    android:paddingEnd="@dimen/edit_text_horizontal_padding"
-                    android:hint="Select option..."
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/edit_text_height"
-                    android:theme="@style/EditTextStyle"
-                    />
+                    android:layout_height="wrap_content"/>
 
                 <LinearLayout
                     android:layout_marginTop="@dimen/bottom_button_vertical_margin"
@@ -132,19 +101,19 @@
                     android:layout_height="wrap_content">
 
                     <Button
-
+                        android:id="@+id/btnCancel"
                         android:textColor="@color/button_color"
                         android:background="@drawable/inverted_button_list"
                         android:layout_marginStart="0dp"
                         android:layout_marginEnd="10dp"
                         android:layout_weight="1"
                         android:text="Cancel"
-
                         style="@style/ButtonStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
 
                     <Button
+                        android:id="@+id/btnSave"
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="0dp"
                         android:layout_weight="1"

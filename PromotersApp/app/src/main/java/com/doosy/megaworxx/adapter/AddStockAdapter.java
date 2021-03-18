@@ -78,7 +78,6 @@ public class AddStockAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
         });
 
-
     }
 
     private void updateQty(int position, int qty){

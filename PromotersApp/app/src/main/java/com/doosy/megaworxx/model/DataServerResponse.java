@@ -29,12 +29,14 @@ public class DataServerResponse<T> extends ServerResponse {
     @Expose()
     private List<T> DataList;
 
+/*
     @Expose()
     private ClientToken clientToken;
 
     public ClientToken getClientToken() {
         return clientToken;
     }
+*/
 
     public List<T> getDataList() {
         return DataList;

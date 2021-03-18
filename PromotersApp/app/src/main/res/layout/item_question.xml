@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:orientation="vertical"
+    android:background="@color/colorWhite"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <include android:id="@+id/itemQuestionSingle" android:visibility="gone" layout="@layout/item_question_text" />
+    <include android:id="@+id/itemQuestionDouble" android:visibility="gone"  layout="@layout/item_question_double" />
+    <include android:id="@+id/itemQuestionMultiple" android:visibility="gone"  layout="@layout/item_question_multiple" />
+
+
+</LinearLayout>

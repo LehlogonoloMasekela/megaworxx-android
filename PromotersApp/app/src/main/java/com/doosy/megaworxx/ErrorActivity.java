@@ -82,7 +82,6 @@ public class ErrorActivity extends AppCompatActivity implements View.OnClickList
         mCampaignViewModel.fetchTodayDate(mSetting.getToken());
         mResponse = mCampaignViewModel.getTodayResponse();
         count++;
-        Log.d(Constants.TAG, "Click: " + count);
         mResponse.observe(this, new Observer<DataServerResponse<Today>>() {
             @Override
             public void onChanged(DataServerResponse<Today> response) {

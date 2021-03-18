@@ -1,14 +1,35 @@
 package com.doosy.megaworxx.entity;
 
-public class Feedback {
-    private String id;
-    private String firstName;
-    private String lastName;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
-    public Feedback(String id, String firstName, String lastName) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
+public class Feedback {
+    @SerializedName("formId")
+    @Expose()
+    private String formId;
+
+    @SerializedName("customerName")
+    @Expose()
+    private String customerName;
+
+    @SerializedName("id")
+    @Expose()
+    private String id;
+
+    public String getFormId() {
+        return formId;
+    }
+
+    public void setFormId(String formId) {
+        this.formId = formId;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
     }
 
     public String getId() {
@@ -17,24 +38,5 @@ public class Feedback {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-    public String getFullName(){
-        return firstName +" "+ lastName;
     }
 }

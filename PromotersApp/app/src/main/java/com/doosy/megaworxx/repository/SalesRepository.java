@@ -3,7 +3,7 @@ package com.doosy.megaworxx.repository;
 import androidx.lifecycle.LiveData;
 
 import com.doosy.megaworxx.api.SaleApiClient;
-import com.doosy.megaworxx.entity.Sales;
+import com.doosy.megaworxx.entity.StockSaleBase;
 import com.doosy.megaworxx.model.DataServerResponse;
 import com.doosy.megaworxx.model.PromoterSaleModel;
 import com.doosy.megaworxx.model.SaleModel;
@@ -20,7 +20,7 @@ public class SalesRepository {
         saleApiClient = SaleApiClient.getInstance();
     }
 
-    public LiveData<DataServerResponse<Sales>> getDataResponse(){
+    public LiveData<DataServerResponse<StockSaleBase>> getDataResponse(){
         return saleApiClient.getSaleResponse();
     }
 

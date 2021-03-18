@@ -3,7 +3,7 @@ package com.doosy.megaworxx.viewmodel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.doosy.megaworxx.entity.Stock;
+import com.doosy.megaworxx.entity.StockSaleBase;
 import com.doosy.megaworxx.model.AddStockModel;
 import com.doosy.megaworxx.model.DataServerResponse;
 import com.doosy.megaworxx.model.ServerResponse;
@@ -20,11 +20,11 @@ public class StockViewModel extends ViewModel {
     }
 
 
-    public LiveData<DataServerResponse<Stock>> getCampaignStock(){
+    public LiveData<DataServerResponse<StockSaleBase>> getCampaignStock(){
         return stockRepository.getCampaignStock();
     }
 
-    public LiveData<DataServerResponse<Stock>> getCampaignPromoterStocks(){
+    public LiveData<DataServerResponse<StockSaleBase>> getCampaignPromoterStocks(){
         return stockRepository.getCampaignPromoterStock();
     }
 

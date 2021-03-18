@@ -3,16 +3,12 @@ package com.doosy.megaworxx.viewmodel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.doosy.megaworxx.api.ApiClient;
-import com.doosy.megaworxx.entity.Sales;
-import com.doosy.megaworxx.entity.StockItem;
+import com.doosy.megaworxx.entity.StockSaleBase;
 import com.doosy.megaworxx.model.DataServerResponse;
 import com.doosy.megaworxx.model.PromoterSaleModel;
 import com.doosy.megaworxx.model.SaleModel;
 import com.doosy.megaworxx.model.ServerResponse;
-import com.doosy.megaworxx.repository.ApiRepository;
 import com.doosy.megaworxx.repository.SalesRepository;
-import com.doosy.megaworxx.repository.StockRepository;
 
 public class SaleViewModel extends ViewModel {
 
@@ -22,7 +18,7 @@ public class SaleViewModel extends ViewModel {
         salesRepository = SalesRepository.getInstance();
     }
 
-    public LiveData<DataServerResponse<Sales>> getDataResponse(){
+    public LiveData<DataServerResponse<StockSaleBase>> getDataResponse(){
         return salesRepository.getDataResponse();
     }
     public LiveData<ServerResponse> getResponse(){

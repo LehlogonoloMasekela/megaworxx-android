@@ -69,8 +69,7 @@ public class SplashActivity extends BaseActivity {
                     getConfig();
 
                 }else{
-                    //Implement messages when the token was not retrieved
-                    // Log.d(Constants.TAG, "A huna token yo waniwaho.");
+                  navigateToError();
                 }
             }
         });

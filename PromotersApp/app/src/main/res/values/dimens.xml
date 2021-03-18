@@ -32,6 +32,7 @@
     <dimen name="filter_horizontal_padding">20dp</dimen>
     <dimen name="filter_vertical_padding">20dp</dimen>
     <dimen name="top_vertical_margin">20dp</dimen>
+    <dimen name="form_top_vertical_margin">10dp</dimen>
     <dimen name="filter_dates_layout_vertical_margin">20dp</dimen>
     <dimen name="filter_dates_layout_horizontal_margin">5dp</dimen>
     <dimen name="filter_dates_indicator_text">19sp</dimen>

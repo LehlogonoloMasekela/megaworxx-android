@@ -38,8 +38,22 @@ public class Util {
             Date date = stringToDateFormat.parse(val);
             convertedDate = dateToString.format(date);
         }catch (Exception e){
-            Log.d(Constants.TAG, "Original: " + val);
-            Log.d(Constants.TAG, "Date: " + e.getMessage());
+            Log.d(Constants.TAG, e.getStackTrace().toString());
+        }
+
+        return convertedDate;
+    }
+
+    public static String formatTime(String val){
+        String convertedDate = "";
+        DateFormat stringToDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH);
+        //stringToDateFormat.setTimeZone(TimeZone.getTimeZone("GMT+2"));
+        DateFormat dateToString = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
+
+        try{
+            Date date = stringToDateFormat.parse(val);
+            convertedDate = dateToString.format(date);
+        }catch (Exception e){
             Log.d(Constants.TAG, e.getStackTrace().toString());
         }
 
@@ -52,4 +66,8 @@ public class Util {
 
         return json;
     }
+
+    public static final String QuestionTypeSingle = "1292acd8-4523-49fc-a372-e1883cf962ce";
+    public static final String QuestionTypeTrueOrFalse= "4e9770a9-8bdc-41ab-84ee-19cca09ac311";
+    public static final String QuestionTypeMultipleOption = "ff07c1a4-fdfa-4a45-9bd1-ef7aa1badf36";
 }

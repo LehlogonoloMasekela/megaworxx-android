@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.doosy.megaworxx.AppExecutors;
 import com.doosy.megaworxx.entity.Campaign;
 import com.doosy.megaworxx.entity.CampaignModel;
+import com.doosy.megaworxx.entity.Form;
 import com.doosy.megaworxx.entity.Promoter;
 import com.doosy.megaworxx.entity.Today;
 import com.doosy.megaworxx.model.CheckModel;
@@ -32,10 +33,14 @@ public class CampaignApiClient {
     private MutableLiveData<DataServerResponse<Today>> mTodayResponse;
     private MutableLiveData<DataServerResponse<CampaignModel>> mTodayCampaignResponse;
     private MutableLiveData<DataServerResponse<Campaign>> campaignResponse;
+    private MutableLiveData<DataServerResponse<Form>> mFormResponse;
+
+
     private CampaignRunnable mCampaignRunnable;
     private TodayDateRunnable mTodayRunnable;
     private TodayCampaignRunnable mTodayCampaignRunnable;
     private CheckRunnable mCheckInOutRunnable;
+    private FetchFormRunnable mFetchFormRunnable;
 
     public static CampaignApiClient getInstance(){
         if(instance == null){
@@ -51,6 +56,7 @@ public class CampaignApiClient {
         mTodayCampaignResponse = new MutableLiveData<>();
         mResponse = new MutableLiveData<>();
         campaignResponse = new MutableLiveData<>();
+        mFormResponse = new MutableLiveData<>();
     }
 
     public LiveData<DataServerResponse<Promoter>> getLoginResponse(){
@@ -63,6 +69,10 @@ public class CampaignApiClient {
 
     public LiveData<DataServerResponse<CampaignModel>> getTodayCampaignResponse(){
         return mTodayCampaignResponse;
+    }
+
+    public LiveData<DataServerResponse<Form>> getFormResponse(){
+        return mFormResponse;
     }
 
     public LiveData<DataServerResponse<Campaign>> getByIdResponse(){
@@ -129,6 +139,90 @@ public class CampaignApiClient {
             }
         }, Constants.NETWORK_TIMEOUT, TimeUnit.MILLISECONDS);
 
+    }
+
+    public void fetchFeedbackForm(String token){
+        if(mFetchFormRunnable != null){
+            mFetchFormRunnable = null;
+        }
+
+        mFetchFormRunnable = new FetchFormRunnable(token);
+
+        final Future handler = AppExecutors.getInstance().
+                getNetworkIO().submit(mFetchFormRunnable);
+
+        AppExecutors.getInstance().getNetworkIO().schedule(new Runnable() {
+            @Override
+            public void run() {
+                handler.cancel(true);
+            }
+        }, Constants.NETWORK_TIMEOUT, TimeUnit.MILLISECONDS);
+
+    }
+
+    public void fetchSurveyForm(String token){
+        if(mFetchFormRunnable != null){
+            mFetchFormRunnable = null;
+        }
+
+        mFetchFormRunnable = new FetchFormRunnable(token);
+
+        final Future handler = AppExecutors.getInstance().
+                getNetworkIO().submit(mFetchFormRunnable);
+
+        AppExecutors.getInstance().getNetworkIO().schedule(new Runnable() {
+            @Override
+            public void run() {
+                handler.cancel(true);
+            }
+        }, Constants.NETWORK_TIMEOUT, TimeUnit.MILLISECONDS);
+
+    }
+
+    private class FetchFormRunnable implements Runnable {
+        String token;
+        private boolean cancelRequest = false;
+
+        public FetchFormRunnable(String token){
+            this.cancelRequest = false;
+            this.token = token;
+        }
+
+        @Override
+        public void run() {
+
+            try{
+
+                Response<DataServerResponse<Form>> response = fetchFeedbackFormCall(token).execute();
+
+                if(cancelRequest){
+                    return;
+                }
+
+                if(response.code() == 200){
+
+                    DataServerResponse<Form> serverResponse = ((response.body()));
+
+                    if(serverResponse != null && serverResponse.isSuccessful()){
+                        List<Form> forms = serverResponse.getDataList();
+
+                        mFormResponse.postValue(serverResponse);
+
+                        Log.d(Constants.TAG,"200 status: " + response.body());
+                        return;
+                    }
+
+                }
+
+                Log.d(Constants.TAG,"Null on today date: " + response.body());
+                mFormResponse.postValue(null);
+
+            }catch (Exception e){
+                Log.d(Constants.TAG,"Exception: " + e.fillInStackTrace());
+                mFormResponse.postValue(null);
+            }
+
+        }
     }
 
     public void fetchTodayCampaign(String token, TodayCampaignModel campaignModel){
@@ -278,13 +372,11 @@ public class CampaignApiClient {
 
                         }
 
-                        Log.d(Constants.TAG,"200 status: " + response.body());
                         return;
                     }
 
                 }
 
-                Log.d(Constants.TAG,"Null on today date: " + response.body());
                 mTodayResponse.postValue(null);
 
             }catch (Exception e){
@@ -334,7 +426,7 @@ public class CampaignApiClient {
                 mResponse.postValue(null);
 
             }catch (Exception e){
-                Log.d(Constants.TAG,"Exception: " + e.fillInStackTrace());
+
                 mResponse.postValue(null);
             }
 
@@ -348,6 +440,14 @@ public class CampaignApiClient {
 
     private Call<ServerResponse> checkInOutCall(String token, CheckModel checkModel){
         return ServiceGenerator.getPromoterApi().checkInOut(token, checkModel);
+    }
+
+    private Call<DataServerResponse<Form>> fetchFeedbackFormCall(String token){
+        return ServiceGenerator.getPromoterApi().fetchFeedbackForm(token);
+    }
+
+    private Call<DataServerResponse<Form>> fetchSurveyFormCall(String token){
+        return ServiceGenerator.getPromoterApi().fetchSurveyForm(token);
     }
 
     private Call<DataServerResponse<String>> todayDateCall(String token){

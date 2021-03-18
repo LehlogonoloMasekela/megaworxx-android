@@ -43,6 +43,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
     private Toolbar toolbar;
 
     private LinearLayout mLinearSignOut;
+    private NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,12 +75,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
                 .setDrawerLayout(drawer)
                 .build();
 
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
         if(savedInstanceState == null){
-            Log.d(Constants.TAG, "savedInstanceState is null");
             mHomeFragment = HomeFragment.newInstance();
             loadFragment(mHomeFragment, "home");
         }
@@ -91,21 +91,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         mLinearSignOut = findViewById(R.id.nav_sign_out);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        //getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    public void openCampaignActivity(){
-        startActivity(new Intent(HomeActivity.this, CampaignActivity.class));
-    }
 
     @Override
     public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this,
-                R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }

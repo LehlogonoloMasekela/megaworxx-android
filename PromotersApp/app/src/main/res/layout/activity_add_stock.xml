@@ -47,7 +47,7 @@
                 android:textStyle="bold"
                 android:textSize="22sp"
                 android:textColor="@color/colorBlack"
-                android:text="@string/add_gadget_text"
+                android:text="@string/new_gadget_header"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 

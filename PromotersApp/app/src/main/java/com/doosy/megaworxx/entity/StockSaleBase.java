@@ -3,7 +3,9 @@ package com.doosy.megaworxx.entity;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Stock {
+import java.io.Serializable;
+
+public class StockSaleBase implements Serializable {
     @SerializedName("id")
     @Expose()
     private String id;
@@ -24,10 +26,6 @@ public class Stock {
     @Expose()
     private String campaignPromoterId;
 
-    @SerializedName("quantity")
-    @Expose()
-    private int quantity;
-
     @SerializedName("campaignLocationId")
     @Expose()
     private String campaignLocationId;
@@ -40,26 +38,25 @@ public class Stock {
     @Expose()
     private String stockItemId;
 
-    public Stock(String id, String dateCreated, String campaignDateId, String campaignPromoterId,
-                 int quantity, String campaignLocationId, String campaignId, String stockItemId) {
-        this.id = id;
-        this.dateCreated = dateCreated;
-        this.campaignDateId = campaignDateId;
-        this.campaignPromoterId = campaignPromoterId;
-        this.quantity = quantity;
-        this.campaignLocationId = campaignLocationId;
-        this.campaignId = campaignId;
-        this.stockItemId = stockItemId;
-    }
+    @SerializedName("quantity")
+    @Expose()
+    protected int quantity;
 
-    public Stock(String id, String dateCreated, StockItem stockItem, String campaignDateId,
-                 String campaignPromoterId, int quantity, String campaignLocationId, String campaignId, String stockItemId) {
+    @SerializedName("price")
+    @Expose()
+    protected double price;
+
+    @SerializedName("deviceId")
+    @Expose()
+    protected String deviceId;
+
+    public StockSaleBase(String id, String dateCreated, StockItem stockItem, String campaignDateId,
+                         String campaignPromoterId, String campaignLocationId, String campaignId, String stockItemId) {
         this.id = id;
         this.dateCreated = dateCreated;
         this.stockItem = stockItem;
         this.campaignDateId = campaignDateId;
         this.campaignPromoterId = campaignPromoterId;
-        this.quantity = quantity;
         this.campaignLocationId = campaignLocationId;
         this.campaignId = campaignId;
         this.stockItemId = stockItemId;
@@ -105,14 +102,6 @@ public class Stock {
         this.campaignPromoterId = campaignPromoterId;
     }
 
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
     public String getCampaignLocationId() {
         return campaignLocationId;
     }
@@ -135,5 +124,46 @@ public class Stock {
 
     public void setStockItemId(String stockItemId) {
         this.stockItemId = stockItemId;
+    }
+
+    public int getQuantity() {
+        return quantity == 0 ? 1 : quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+    }
+
+    @Override
+    public String toString() {
+        return "StockSaleBase{" +
+                "id='" + id + '\'' +
+                ", dateCreated='" + dateCreated + '\'' +
+                ", stockItem=" + stockItem +
+                ", campaignDateId='" + campaignDateId + '\'' +
+                ", campaignPromoterId='" + campaignPromoterId + '\'' +
+                ", campaignLocationId='" + campaignLocationId + '\'' +
+                ", campaignId='" + campaignId + '\'' +
+                ", stockItemId='" + stockItemId + '\'' +
+                ", quantity=" + quantity +
+                ", price=" + price +
+                ", deviceId='" + deviceId + '\'' +
+                '}';
     }
 }

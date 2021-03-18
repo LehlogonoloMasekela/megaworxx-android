@@ -1,6 +1,8 @@
 package com.doosy.megaworxx.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,19 +14,19 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.doosy.megaworxx.R;
-import com.doosy.megaworxx.entity.Stock;
-import com.doosy.megaworxx.entity.Survey;
-import com.doosy.megaworxx.ui.campaign.CampaignActivity;
+import com.doosy.megaworxx.entity.StockSaleBase;
+import com.doosy.megaworxx.ui.StockItemsViewActivity;
+import com.doosy.megaworxx.util.QuestionnaireType;
 import com.doosy.megaworxx.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class StockAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private List<Stock> mStocks = new ArrayList<>();
+    private List<StockSaleBase> mStocks = new ArrayList<>();
     private Context mContext;
 
-    public StockAdapter(List<Stock> stock, Context activity) {
+    public StockAdapter(List<StockSaleBase> stock, Context activity) {
         mContext = activity;
         mStocks = stock;
     }
@@ -40,7 +42,7 @@ public class StockAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        final Stock stock = mStocks.get(position);
+        final StockSaleBase stock = mStocks.get(position);
 
         ((ViewHolder)holder).tvDisplayName.setText("Stock Date: " + Util.formatDate(stock.getDateCreated()));
         ((ViewHolder)holder).imgItemIcon.setImageResource(R.drawable.ic_stock_icon);
@@ -48,7 +50,15 @@ public class StockAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         ((ViewHolder)holder).cardItemMainLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((CampaignActivity)mContext).viewDetail(CampaignActivity.CampaignTab.Feedback);
+
+                String type = mContext.getString(R.string.key_campaign_page_type);
+                String dataTpe = mContext.getString(R.string.key_campaign_stock_sale_data);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(type, QuestionnaireType.Stock);
+                bundle.putSerializable(dataTpe, stock);
+                Intent intent = new Intent(mContext, StockItemsViewActivity.class);
+                intent.putExtras(bundle);
+                mContext.startActivity(intent);
             }
         });
     }

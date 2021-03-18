@@ -18,19 +18,19 @@ public class CheckModel implements Serializable {
     @Expose()
     private String campaignId;
 
-    @SerializedName("coordinates")
+    @SerializedName("campaignLocationId")
     @Expose()
-    private String coordinates;
+    private String campaignLocationId;
 
     @SerializedName("type")
     @Expose()
     private int type;
 
-    public CheckModel(String campaignPromoterId, String campaignDateId, String campaignId, String coordinates, int type) {
+    public CheckModel(String campaignPromoterId, String campaignDateId, String campaignId, String campaignLocationId, int type) {
         this.campaignPromoterId = campaignPromoterId;
         this.campaignDateId = campaignDateId;
         this.campaignId = campaignId;
-        this.coordinates = coordinates;
+        this.campaignLocationId = campaignLocationId;
         this.type = type;
     }
 
@@ -58,12 +58,12 @@ public class CheckModel implements Serializable {
         this.campaignId = campaignId;
     }
 
-    public String getCoordinates() {
-        return coordinates;
+    public String getCampaignLocationId() {
+        return campaignLocationId;
     }
 
-    public void setCoordinates(String coordinates) {
-        this.coordinates = coordinates;
+    public void setCampaignLocationId(String campaignLocationId) {
+        this.campaignLocationId = campaignLocationId;
     }
 
     public int getType() {
@@ -80,9 +80,8 @@ public class CheckModel implements Serializable {
                 "campaignPromoterId='" + campaignPromoterId + '\'' +
                 ", campaignDateId='" + campaignDateId + '\'' +
                 ", campaignId='" + campaignId + '\'' +
-                ", coordinates='" + coordinates + '\'' +
-                ", type='" + type + '\'' +
+                ", campaignLocationId='" + campaignLocationId + '\'' +
+                ", type=" + type +
                 '}';
     }
-
 }

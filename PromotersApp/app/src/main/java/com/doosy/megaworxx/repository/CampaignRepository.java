@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData;
 import com.doosy.megaworxx.api.CampaignApiClient;
 import com.doosy.megaworxx.entity.Campaign;
 import com.doosy.megaworxx.entity.CampaignModel;
+import com.doosy.megaworxx.entity.Form;
 import com.doosy.megaworxx.entity.Promoter;
 import com.doosy.megaworxx.entity.Today;
 import com.doosy.megaworxx.model.CheckModel;
@@ -37,8 +38,20 @@ public class CampaignRepository {
         mCampaignApiClient.fetchTodayDate(token);
     }
 
+    public void fetchFeedbackForm(String token){
+        mCampaignApiClient.fetchFeedbackForm(token);
+    }
+
+    public void fetchSurveyForm(String token){
+        mCampaignApiClient.fetchSurveyForm(token);
+    }
+
     public void fetchTodayCampaign(String token, TodayCampaignModel campaignModel){
         mCampaignApiClient.fetchTodayCampaign(token, campaignModel);
+    }
+
+    public LiveData<DataServerResponse<Form>> getFormResponse(){
+        return mCampaignApiClient.getFormResponse();
     }
 
     public LiveData<DataServerResponse<Today>> getTodayResponse(){

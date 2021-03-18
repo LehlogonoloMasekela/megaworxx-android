@@ -1,23 +1,34 @@
 package com.doosy.megaworxx.ui.profile;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.doosy.megaworxx.R;
-import com.doosy.megaworxx.ui.message.MessageFragment;
+import com.doosy.megaworxx.entity.Promoter;
+import com.doosy.megaworxx.model.DataServerResponse;
+import com.doosy.megaworxx.ui.BaseFragment;
+import com.doosy.megaworxx.viewmodel.ProfileViewModel;
 
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends BaseFragment {
 
     private ProfileViewModel profileViewModel;
+    private LiveData<DataServerResponse<Promoter>> mResponse;
+
+    private Promoter mPromoter;
+
+    private TextView tvFullName;
+    private TextView tvFirstName;
+    private TextView tvLastName;
+    private TextView tvEmail;
+    private TextView tvPhone;
+    private TextView tvId;
 
     public ProfileFragment (){
 
@@ -29,18 +40,64 @@ public class ProfileFragment extends Fragment {
         return fragment;
     }
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        profileViewModel =
-                ViewModelProviders.of(this).get(ProfileViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_profile, container, false);
-     /*   final TextView textView = root.findViewById(R.id.text_slideshow);
-        profileViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
+        profileViewModel.fetchProfileById(setting.getToken(), setting.getUserId());
+    }
+
+    @Override
+    public int getLayoutRes() {
+        return R.layout.fragment_profile;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initViews(view);
+
+        if(mResponse != null){
+            displayUser();
+        }else{
+            subscribe();
+        }
+
+    }
+
+    private void subscribe(){
+        showLoading();
+        mResponse = profileViewModel.getDataResponse();
+
+        mResponse.observe(getViewLifecycleOwner(), new Observer<DataServerResponse<Promoter>>() {
             @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
+            public void onChanged(DataServerResponse<Promoter> response) {
+                hideLoading();
+                if(response != null && response.isSuccessful()){
+                    if(response.getDataList().size() > 0){
+                        mPromoter = response.getDataList().get(0);
+                        displayUser();
+                    }
+                }
             }
-        });*/
-        return root;
+        });
+    }
+
+    private void displayUser(){
+        tvFullName.setText(mPromoter.getFullName());
+        tvFirstName.setText(mPromoter.getFirstName());
+        tvLastName.setText(mPromoter.getSurname());
+        tvEmail.setText(mPromoter.getEmail());
+        tvPhone.setText(mPromoter.getPhone());
+        tvId.setText(mPromoter.getIdNumber());
+    }
+
+    private void initViews(View view){
+        tvFullName = view.findViewById(R.id.tvFullName);
+        tvFirstName = view.findViewById(R.id.tvFirstName);
+        tvLastName = view.findViewById(R.id.tvLastName);
+        tvEmail = view.findViewById(R.id.tvEmail);
+        tvPhone = view.findViewById(R.id.tvPhone);
+        tvId = view.findViewById(R.id.tvIdNumber);
     }
 }

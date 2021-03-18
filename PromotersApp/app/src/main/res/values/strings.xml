@@ -36,27 +36,34 @@
     <string name="nav_action_campaign">Campaigns</string>
     <string name="nav_action_messages">Messages</string>
     <string name="nav_action_profile">Profile</string>
-    <string name="campaign_survey_feedback_date">Date: 11/02/2021</string>
-    <string name="campaign_check_in_time">Check-in time: 12:38</string>
+    <string name="campaign_date">Date: %1$s</string>
+    <string name="campaign_check_in_time">Check-in time: %1$s</string>
+    <string name="campaign_check_out_time">Check-out time: %1$s</string>
     <string name="survey_item">Customer satisfaction survey</string>
     <string name="feedback_item">Customer satisfaction feedback</string>
-    <string name="campaign_check_out_time">Check-out time: N/A</string>
 
 
-    <string name="action_add_survey">Add survey</string>
-    <string name="action_add_stock">Add stock</string>
-    <string name="action_add_feedback">Add feedback</string>
-    <string name="action_add_sale">Add sale</string>
+    <string name="feedback_answers_header">Feedback Answers</string>
+    <string name="survey_answers_header">Survey Answers</string>
 
-    <string name="new_survey_text">New Survey</string>
-    <string name="add_gadget_text">Add Gadget/Stock</string>
-    <string name="add_sales_text">Add Sale</string>
-    <string name="new_feedback_text">New Feedback</string>
+    <string name="add_survey_title">Add survey</string>
+    <string name="add_stock_title">Add stock</string>
+    <string name="add_feedback_title">Add feedback</string>
+    <string name="add_sale_title">Add sale</string>
 
+    <string name="new_survey_header">New Survey</string>
+    <string name="new_gadget_header">Add Gadget/Stock</string>
+    <string name="new_sales_header">Add Sale</string>
+    <string name="new_feedback_header">New Feedback</string>
+
+    <string name="key_form_id">key_form_id</string>
     <string name="key_campaign_model">campaignModel</string>
     <string name="key_campaign">campaign</string>
     <string name="key_survey">survey</string>
     <string name="key_promoter">promoter</string>
+
+    <string name="key_campaign_page_type">questionnaire_type</string>
+    <string name="key_campaign_stock_sale_data">key_campaign_stock_sale_data</string>
 
     <string-array name="check_success">
         <item>Success</item>
@@ -79,5 +86,10 @@
     </string-array>
 
     <string name="txt_retry"> <u>Retry</u> </string>
+
+    <string name="short_question">enim diam vulputate ut pharetra sit amet aliquam id diam?</string>
+    <string name="medium_question">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua..?</string>
+    <string name="long_question">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sit amet est placerat in egestas erat.?</string>
+
 
 </resources>

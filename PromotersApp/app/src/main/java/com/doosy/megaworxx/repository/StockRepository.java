@@ -3,7 +3,7 @@ package com.doosy.megaworxx.repository;
 import androidx.lifecycle.LiveData;
 
 import com.doosy.megaworxx.api.StockApiClient;
-import com.doosy.megaworxx.entity.Stock;
+import com.doosy.megaworxx.entity.StockSaleBase;
 import com.doosy.megaworxx.model.AddStockModel;
 import com.doosy.megaworxx.model.DataServerResponse;
 import com.doosy.megaworxx.model.ServerResponse;
@@ -21,11 +21,11 @@ public class StockRepository {
         mStockApiClient = StockApiClient.getInstance();
     }
 
-    public LiveData<DataServerResponse<Stock>> getCampaignStock(){
+    public LiveData<DataServerResponse<StockSaleBase>> getCampaignStock(){
         return mStockApiClient.getCampaignStock();
     }
 
-    public LiveData<DataServerResponse<Stock>> getCampaignPromoterStock(){
+    public LiveData<DataServerResponse<StockSaleBase>> getCampaignPromoterStock(){
         return mStockApiClient.getCampaignPromoterStock();
     }
 

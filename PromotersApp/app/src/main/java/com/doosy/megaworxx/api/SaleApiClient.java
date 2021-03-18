@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.doosy.megaworxx.AppExecutors;
-import com.doosy.megaworxx.entity.Sales;
+import com.doosy.megaworxx.entity.StockSaleBase;
 import com.doosy.megaworxx.model.DataServerResponse;
 import com.doosy.megaworxx.model.PromoterSaleModel;
 import com.doosy.megaworxx.model.SaleModel;
@@ -23,7 +23,7 @@ import retrofit2.Response;
 public class SaleApiClient {
     private static SaleApiClient instance;
 
-    private MutableLiveData<DataServerResponse<Sales>> mSaleResponse;
+    private MutableLiveData<DataServerResponse<StockSaleBase>> mSaleResponse;
     private MutableLiveData<ServerResponse> mResponse;
     private SalesRunnable mSalesRunnable;
     private SaveSaleRunnable mSaveSaleRunnable;
@@ -41,7 +41,7 @@ public class SaleApiClient {
         mSaleResponse = new MutableLiveData<>();
     }
 
-    public LiveData<DataServerResponse<Sales>> getSaleResponse(){
+    public LiveData<DataServerResponse<StockSaleBase>> getSaleResponse(){
         return mSaleResponse;
     }
 
@@ -156,7 +156,7 @@ public class SaleApiClient {
                 Log.d(Constants.TAG,"Before if : "+response.body());
                 if(response.code() == 200){
 
-                    DataServerResponse<Sales> serverResponse = ((DataServerResponse<Sales>)(response.body()));
+                    DataServerResponse<StockSaleBase> serverResponse = ((DataServerResponse<StockSaleBase>)(response.body()));
 
                     if(serverResponse != null){
                         mSaleResponse.postValue(serverResponse);
@@ -226,7 +226,7 @@ public class SaleApiClient {
                 Log.d(Constants.TAG,response.body().toString());
                 if(response.code() == 200){
 
-                    DataServerResponse<Sales> serverResponse = ((DataServerResponse<Sales>)(response.body()));
+                    DataServerResponse<StockSaleBase> serverResponse = ((DataServerResponse<StockSaleBase>)(response.body()));
 
                     if(serverResponse != null){
                         mSaleResponse.postValue(serverResponse);
@@ -250,13 +250,13 @@ public class SaleApiClient {
         return ServiceGenerator.getPromoterApi().saveCampaignSale(token, model);
     }
 
-    private Call<DataServerResponse<Sales>> fetchSales(String token,PromoterSaleModel model){
+    private Call<DataServerResponse<StockSaleBase>> fetchSales(String token,PromoterSaleModel model){
 
         return ServiceGenerator.getPromoterApi().fetchPromoterSales(token, model.getPromoterId(),
                 model.getCampaignId(), model.getCampaignLocationId());
     }
 
-    private Call<DataServerResponse<Sales>> getPromoterSales(String token,String promoterId,String campaignId, String campaignLocationId){
+    private Call<DataServerResponse<StockSaleBase>> getPromoterSales(String token,String promoterId,String campaignId, String campaignLocationId){
         return ServiceGenerator.getPromoterApi().getPromoterSales(token, promoterId,campaignId,campaignLocationId);
     }
 

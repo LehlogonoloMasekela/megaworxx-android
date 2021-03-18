@@ -6,9 +6,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.doosy.megaworxx.AppExecutors;
-import com.doosy.megaworxx.entity.Stock;
+import com.doosy.megaworxx.entity.StockSaleBase;
 import com.doosy.megaworxx.model.AddStockModel;
-import com.doosy.megaworxx.model.CheckModel;
 import com.doosy.megaworxx.model.DataServerResponse;
 import com.doosy.megaworxx.model.ServerResponse;
 import com.doosy.megaworxx.request.ServiceGenerator;
@@ -24,8 +23,8 @@ import retrofit2.Response;
 public class StockApiClient {
     private static StockApiClient instance;
 
-    private MutableLiveData<DataServerResponse<Stock>> mCampaignStockResponse;
-    private MutableLiveData<DataServerResponse<Stock>> mCampaignPromoterStockResponse;
+    private MutableLiveData<DataServerResponse<StockSaleBase>> mCampaignStockResponse;
+    private MutableLiveData<DataServerResponse<StockSaleBase>> mCampaignPromoterStockResponse;
     private MutableLiveData<ServerResponse> mResponse;
     private StockRunnable mStockRunnable;
     private AddStockRunnable mAddStockRunnable;
@@ -44,11 +43,11 @@ public class StockApiClient {
         mCampaignPromoterStockResponse = new MutableLiveData<>();
     }
 
-    public LiveData<DataServerResponse<Stock>> getCampaignStock(){
+    public LiveData<DataServerResponse<StockSaleBase>> getCampaignStock(){
         return mCampaignStockResponse;
     }
 
-    public LiveData<DataServerResponse<Stock>> getCampaignPromoterStock(){
+    public LiveData<DataServerResponse<StockSaleBase>> getCampaignPromoterStock(){
         return mCampaignPromoterStockResponse;
     }
 
@@ -138,7 +137,7 @@ public class StockApiClient {
                 Log.d(Constants.TAG,"Before if : "+response.body());
                 if(response.code() == 200){
 
-                    DataServerResponse<Stock> serverResponse = ((DataServerResponse<Stock>)(response.body()));
+                    DataServerResponse<StockSaleBase> serverResponse = ((DataServerResponse<StockSaleBase>)(response.body()));
 
                     if(serverResponse != null){
                         mCampaignStockResponse.postValue(serverResponse);
@@ -179,7 +178,7 @@ public class StockApiClient {
                 if(cancelRequest){
                     return;
                 }
-
+                Log.d(Constants.TAG,"Stock Status: "+response.body());
                 if(response.code() == 200){
 
                     ServerResponse serverResponse = ((ServerResponse)(response.body()));
@@ -188,7 +187,7 @@ public class StockApiClient {
                         mResponse.postValue(serverResponse);
                         return;
                     }
-                    Log.d(Constants.TAG,"Model: "+response.body());
+
                 }
 
                 mResponse.postValue(null);
@@ -231,7 +230,7 @@ public class StockApiClient {
                 Log.d(Constants.TAG,response.body().toString());
                 if(response.code() == 200){
 
-                    DataServerResponse<Stock> serverResponse = ((DataServerResponse<Stock>)(response.body()));
+                    DataServerResponse<StockSaleBase> serverResponse = ((DataServerResponse<StockSaleBase>)(response.body()));
 
                     if(serverResponse != null){
                         mCampaignPromoterStockResponse.postValue(serverResponse);
@@ -255,11 +254,11 @@ public class StockApiClient {
         return ServiceGenerator.getPromoterApi().saveCampaignStock(token, addStockModel);
     }
 
-    private Call<DataServerResponse<Stock>> fetchStocks(String token,String campaignId){
+    private Call<DataServerResponse<StockSaleBase>> fetchStocks(String token,String campaignId){
 
         return ServiceGenerator.getPromoterApi().fetchCampaignStock(token,campaignId);
     }
-    private Call<DataServerResponse<Stock>> getPromoterStocks(String token,String promoterId,String campaignId, String campaignLocationId){
+    private Call<DataServerResponse<StockSaleBase>> getPromoterStocks(String token,String promoterId,String campaignId, String campaignLocationId){
 
         return ServiceGenerator.getPromoterApi().getPromoterStocks(token, promoterId,campaignId,campaignLocationId);
     }

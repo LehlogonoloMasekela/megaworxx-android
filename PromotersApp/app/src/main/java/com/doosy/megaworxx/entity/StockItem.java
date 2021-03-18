@@ -3,14 +3,9 @@ package com.doosy.megaworxx.entity;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class StockItem {
-    @SerializedName("id")
-    @Expose()
-    private String id;
+import java.io.Serializable;
 
-    @SerializedName("name")
-    @Expose()
-    private String name;
+public class StockItem extends BaseEntity implements Serializable {
 
     @SerializedName("makeId")
     @Expose()
@@ -24,20 +19,20 @@ public class StockItem {
     @Expose()
     private String yearCreated;
 
-    public String getId() {
-        return id;
-    }
+    @SerializedName("make")
+    @Expose()
+    private Make make;
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    @SerializedName("model")
+    @Expose()
+    private Model model;
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public StockItem(String id, String name, String dateCreated, String createdBy,
+                     String makeId, String modelId, String yearCreated) {
+        super(id, name, dateCreated, createdBy);
+        this.makeId = makeId;
+        this.modelId = modelId;
+        this.yearCreated = yearCreated;
     }
 
     public String getMakeId() {
@@ -62,5 +57,21 @@ public class StockItem {
 
     public void setYearCreated(String yearCreated) {
         this.yearCreated = yearCreated;
+    }
+
+    public Make getMake() {
+        return make;
+    }
+
+    public void setMake(Make make) {
+        this.make = make;
+    }
+
+    public Model getModel() {
+        return model;
+    }
+
+    public void setModel(Model model) {
+        this.model = model;
     }
 }

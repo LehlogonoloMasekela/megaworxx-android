@@ -63,7 +63,6 @@ public class CampaignAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public int getItemCount() {
-        Log.d(Constants.TAG, "Number of items: "+ mCampaignModels.size());
         return mCampaignModels.size();
     }
 

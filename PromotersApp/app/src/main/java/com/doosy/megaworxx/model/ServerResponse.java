@@ -3,6 +3,7 @@ package com.doosy.megaworxx.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ServerResponse {
@@ -15,7 +16,7 @@ public class ServerResponse {
     private List<String> messages;
 
     public ServerResponse() {
-
+        this.messages = new ArrayList<>();
     }
 
     public ServerResponse(boolean isSuccessful, List<String> message) {

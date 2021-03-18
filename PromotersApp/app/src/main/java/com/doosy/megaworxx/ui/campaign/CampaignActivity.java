@@ -36,16 +36,18 @@ import com.doosy.megaworxx.model.DialogMessage;
 import com.doosy.megaworxx.model.CheckModel;
 import com.doosy.megaworxx.model.DataServerResponse;
 import com.doosy.megaworxx.model.ServerResponse;
+import com.doosy.megaworxx.model.StatusModel;
 import com.doosy.megaworxx.service.listener.OnCheckDialogListener;
 import com.doosy.megaworxx.service.listener.OnConfirmDialogListener;
 import com.doosy.megaworxx.ui.BaseActivity;
-import com.doosy.megaworxx.ui.ViewDetailActivity;
-import com.doosy.megaworxx.ui.feedback.AddFeedbackActivity;
+import com.doosy.megaworxx.ui.StockItemsViewActivity;
+import com.doosy.megaworxx.ui.feedback.AddQuestionnaireActivity;
 import com.doosy.megaworxx.ui.sales.AddSalesActivity;
 import com.doosy.megaworxx.ui.stock.AddStockActivity;
-import com.doosy.megaworxx.ui.survey.AddSurveyActivity;
 import com.doosy.megaworxx.util.Constants;
+import com.doosy.megaworxx.util.QuestionnaireType;
 import com.doosy.megaworxx.viewmodel.CampaignViewModel;
+import com.doosy.megaworxx.viewmodel.CheckViewModel;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
@@ -75,6 +77,7 @@ public class CampaignActivity extends BaseActivity implements View.OnClickListen
     private LocationManager mLocationManager;
 
     private CampaignViewModel campaignViewModel;
+    private CheckViewModel checkViewModel;
     private LiveData<ServerResponse> mResponse;
     private LiveData<DataServerResponse<Campaign>> mDataResponse;
 
@@ -83,24 +86,30 @@ public class CampaignActivity extends BaseActivity implements View.OnClickListen
 
     private int REQUEST_CODE_ADD_STOCK = 1001;
     private int REQUEST_CODE_ADD_SALE = 1002;
+    private int REQUEST_CODE_ADD_FEEDBACK = 1003;
+    private int REQUEST_CODE_ADD_SURVEY = 1004;
 
     private int REQUEST_CHECK = 1;
 
     private SectionsPagerAdapter sectionsPagerAdapter;
     private ConfirmDialog confirmDialog;
 
+    private StatusModel mStatusModel;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_campaign_detail);
+        showLoading();
         campaignViewModel = new ViewModelProvider(this).get(CampaignViewModel.class);
+        checkViewModel = new ViewModelProvider(this).get(CheckViewModel.class);
         initViews();
 
         String key = getString(R.string.key_campaign_model);
 
         if(getIntent().hasExtra(key)){
             mCampaignModel = (CampaignModel) getIntent().getSerializableExtra(key);
-            showLoading();
+
             campaignViewModel.getCampaignById(settings.getToken(), mCampaignModel.getCampaignId());
             mDataResponse = campaignViewModel.getCampaignResponse();
             mDataResponse.observe(this, new Observer<DataServerResponse<Campaign>>() {
@@ -109,16 +118,17 @@ public class CampaignActivity extends BaseActivity implements View.OnClickListen
                     hideLoading();
                     if(response != null && response.isSuccessful()){
                         mCampaign = response.getDataList().get(0);
+                        Log.d(Constants.TAG, mCampaign.toString());
                         initViewPager();
                     }
                 }
             });
             MaterialToolbar toolbar = findViewById(R.id.toolbar);
             toolbar.setTitle(mCampaignModel.getCampaignName());
+            getStatus(mCampaignModel);
         }
 
         baseFloatingActionButton = findViewById(R.id.baseFloatingActionButton);
-
 
         mainLayout = findViewById(R.id.mainLayout);
         getAnimations();
@@ -133,9 +143,29 @@ public class CampaignActivity extends BaseActivity implements View.OnClickListen
         fabCheckIn.setOnClickListener(this);
         fabCheckOut.setOnClickListener(this);
         mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        checkLocationPermission();
+
         requestLocation();
 
+    }
+
+    private void getStatus(CampaignModel campaignModel){
+        LiveData<DataServerResponse<StatusModel>> response;
+        checkViewModel.getStatus(settings.getToken(), campaignModel);
+        response = checkViewModel.getResponse();
+        response.observe(this, new Observer<DataServerResponse<StatusModel>>() {
+            @Override
+            public void onChanged(DataServerResponse<StatusModel> response) {
+                if(response != null && response.isSuccessful()){
+                    if(response.getDataList().size() > 0){
+                        mStatusModel = response.getDataList().get(0);
+                    }
+                }
+            }
+        });
+    }
+
+    public StatusModel getStatusModel(){
+        return mStatusModel;
     }
 
     private void initViewPager(){
@@ -168,14 +198,16 @@ public class CampaignActivity extends BaseActivity implements View.OnClickListen
     private final LocationListener mLocationListener = new LocationListener() {
         @Override
         public void onLocationChanged(final Location location) {
-            mLocation = location;
+            if(location != null){
+                mLocation = location;
+            }
 
-            //Log.d(Constants.TAG, "Latitude: " +
-            // mLocation.getLatitude() + " ==== Longitude: " + mLocation.getLongitude());
         }
 
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {
+
+
 
         }
 
@@ -190,14 +222,12 @@ public class CampaignActivity extends BaseActivity implements View.OnClickListen
         }
     };
 
-    public Location getLocation() {
-        return mLocation;
-    }
-
     private void check(final int checkType) {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                ActivityCompat.checkSelfPermission(this,
+                        Manifest.permission.ACCESS_COARSE_LOCATION)
                         != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -206,7 +236,10 @@ public class CampaignActivity extends BaseActivity implements View.OnClickListen
         }
 
         Location location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        if(location == null){
+
+        if(location != null) mLocation = location;
+
+        if(mLocation == null){
             DialogMessage dialogMessage = null;
             String[] strList = getResources().getStringArray(R.array.check_error);
             dialogMessage = new DialogMessage(strList[0],
@@ -215,10 +248,11 @@ public class CampaignActivity extends BaseActivity implements View.OnClickListen
             showDialog(dialogMessage);
             return;
         }
-        String formattedLocation = location.getLatitude() + ";" +location.getLongitude();
 
         CheckModel checkModel = new CheckModel(settings.getUserId(),
-                mCampaignModel.getCampaignDateId(), mCampaignModel.getCampaignId(),formattedLocation,checkType);
+                mCampaignModel.getCampaignDateId(), mCampaignModel.getCampaignId(),
+                mCampaignModel.getCampaignLocationId(),checkType);
+
         campaignViewModel.check(settings.getToken(), checkModel);
         mResponse = campaignViewModel.getResponse();
         mResponse.observe(this, new Observer<ServerResponse>() {
@@ -232,6 +266,7 @@ public class CampaignActivity extends BaseActivity implements View.OnClickListen
                 DialogMessage dialogMessage = null;
                 String[] strList = getResources().getStringArray(R.array.check_error);
                 if(response == null){
+
                     dialogMessage = new DialogMessage(strList[0],
                             checkType == 1? strList[1] : strList[2] ,
                             R.drawable.ic_warning2);
@@ -244,6 +279,7 @@ public class CampaignActivity extends BaseActivity implements View.OnClickListen
                     dialogMessage = new DialogMessage(strList[0],
                             checkType == 1? strList[1] : strList[2] , R.drawable.ic_success_icon);
                 }else{
+
                     String messege = "";
                     if(response.getMessages().size() > 0){
                         for (String msg:
@@ -262,7 +298,6 @@ public class CampaignActivity extends BaseActivity implements View.OnClickListen
                 showDialog(dialogMessage);
             }
         });
-
 
     }
 
@@ -301,32 +336,33 @@ public class CampaignActivity extends BaseActivity implements View.OnClickListen
 
     private void requestLocation(){
         if(checkLocationPermission()) {
-            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
+            Log.d(Constants.TAG, "Request location updates");
+            mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,
                     0, mLocationListener);
         }
     }
 
     private void changeAction(int position) {
-        Log.d(Constants.TAG, "Position: "+position);
+
         switch (position){
 
             case 0:
 
                 mCampaignTab = CampaignTab.Stock;
-                tvAdd.setText(getString(R.string.action_add_stock));
+                tvAdd.setText(getString(R.string.add_stock_title));
                 break;
             case 1:
                 mCampaignTab = CampaignTab.Sales;
-                tvAdd.setText(getString(R.string.action_add_sale));
+                tvAdd.setText(getString(R.string.add_sale_title));
                 break;
             case 2:
                 mCampaignTab = CampaignTab.Survey;
-                tvAdd.setText(getString(R.string.action_add_survey));
+                tvAdd.setText(getString(R.string.add_survey_title));
 
                 break;
             case 3:
                 mCampaignTab = CampaignTab.Feedback;
-                tvAdd.setText(getString(R.string.action_add_feedback));
+                tvAdd.setText(getString(R.string.add_feedback_title));
                 break;
         }
     }
@@ -386,29 +422,56 @@ public class CampaignActivity extends BaseActivity implements View.OnClickListen
 
     }
 
+    private Location getLocation(){
+        Location location = null;
+
+        if(checkLocationPermission()) {
+            location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+            if(location == null){
+                location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            }
+        }else{
+            location = mLocation;
+        }
+
+        return location;
+    }
+
     @Override
     public void onClick(View v) {
 
         Bundle bundle = new Bundle();
+        String keyQuestionnaireType = getString(R.string.key_campaign_page_type);
         String keyCampaign = getString(R.string.key_campaign);
         String keyCampaignModel = getString(R.string.key_campaign_model);
         bundle.putSerializable(keyCampaign, mCampaign);
         bundle.putSerializable(keyCampaignModel, mCampaignModel);
 
-        String coordinates = mLocation.getLongitude() +","+ mLocation.getLatitude();
+        if(mLocation == null)
+        {
+            mLocation = getLocation();
+        }
+
+        String coordinates = mLocation.getLongitude() +"|"+ mLocation.getLatitude();
         settings.saveCoordinates(coordinates);
 
         if(v.getId() == R.id.addFab){
-            if(mCampaignTab == CampaignTab.Survey){
-                startActivity(new Intent(this, AddSurveyActivity.class));
-            }else if(mCampaignTab == CampaignTab.Stock){
+            if(mCampaignTab == CampaignTab.Stock){
 
                 Intent intent = new Intent(this, AddStockActivity.class);
                 intent.putExtras(bundle);
                 startActivityForResult(intent, REQUEST_CODE_ADD_STOCK);
-            }
-            else if(mCampaignTab == CampaignTab.Feedback){
-                startActivity(new Intent(this, AddFeedbackActivity.class));
+            }else if(mCampaignTab == CampaignTab.Feedback){
+                Intent intent = new Intent(this, AddQuestionnaireActivity.class);
+                bundle.putSerializable(keyQuestionnaireType, QuestionnaireType.FeedBack);
+                intent.putExtras(bundle);
+                startActivityForResult(intent, REQUEST_CODE_ADD_FEEDBACK);
+            } else if(mCampaignTab == CampaignTab.Survey){
+                Intent intent = new Intent(this, AddQuestionnaireActivity.class);
+                bundle.putSerializable(keyQuestionnaireType, QuestionnaireType.Survey);
+                intent.putExtras(bundle);
+                startActivityForResult(intent, REQUEST_CODE_ADD_SURVEY);
             }else if(mCampaignTab == CampaignTab.Sales){
 
                 Intent intent = new Intent(this, AddSalesActivity.class);
@@ -436,12 +499,6 @@ public class CampaignActivity extends BaseActivity implements View.OnClickListen
         if(isFabMenuOpen) collapseFabMenu();
     }
 
-    public void viewDetail(CampaignTab campaignTab){
-        Intent intent = new Intent(this, ViewDetailActivity.class);
-        startActivity(intent);
-    }
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -461,6 +518,24 @@ public class CampaignActivity extends BaseActivity implements View.OnClickListen
                     if(isSuccessful){
                         if(sectionsPagerAdapter != null){
                             sectionsPagerAdapter.reload(CampaignTab.Sales);
+                        }
+                    }
+                }
+            }else  if(requestCode == REQUEST_CODE_ADD_FEEDBACK){
+                if(data.hasExtra("isSuccessful")){
+                    boolean isSuccessful = (boolean)data.getSerializableExtra("isSuccessful");
+                    if(isSuccessful){
+                        if(sectionsPagerAdapter != null){
+                            sectionsPagerAdapter.reload(CampaignTab.Feedback);
+                        }
+                    }
+                }
+            }else if(requestCode == REQUEST_CODE_ADD_SURVEY){
+                if(data.hasExtra("isSuccessful")){
+                    boolean isSuccessful = (boolean)data.getSerializableExtra("isSuccessful");
+                    if(isSuccessful){
+                        if(sectionsPagerAdapter != null){
+                            sectionsPagerAdapter.reload(CampaignTab.Survey);
                         }
                     }
                 }
