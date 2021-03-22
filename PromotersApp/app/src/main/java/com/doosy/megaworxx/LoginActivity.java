@@ -136,6 +136,16 @@ public class LoginActivity extends BaseActivity {
 
     }
 
+    @Override
+    public void displayPage(boolean hasContent) {
+
+    }
+
+    @Override
+    public void retryLoad() {
+
+    }
+
     private void showDialogMessage(String header, String body){
         BottomSheetFragment bottomSheetFragment = BottomSheetFragment.newInstance(header, body);
         bottomSheetFragment.show(getSupportFragmentManager(), "login");

@@ -1,4 +1,4 @@
-package com.doosy.megaworxx.ui.filter;
+package com.doosy.megaworxx.ui.home;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -35,7 +36,7 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
     private EditText editStartDate;
     private EditText editEndDate;
     private Button btnFilterCampaign;
-
+    private FrameLayout noContent;
     private CampaignViewModel mCampaignViewModel;
     private LiveData<DataServerResponse<CampaignModel>> mResponse;
 
@@ -46,7 +47,7 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
     private boolean isLoading = false;
 
     public FilterFragment (){
-
+        setRetainInstance(true);
     }
 
     public static FilterFragment newInstance() {
@@ -58,8 +59,14 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mCampaignViewModel = new ViewModelProvider(this).get(CampaignViewModel.class);
+
     }
+
+    @Override
+    public void retryLoad() {
+        loadTodayCampaign();
+    }
+
 
     @Override
     public int getLayoutRes() {
@@ -85,6 +92,12 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
     }
 
     @Override
+    public void noContent(boolean hasContent){
+        mRecyclerviewCampaign.setVisibility(hasContent ? View.VISIBLE : View.GONE);
+        noContent.setVisibility(hasContent ? View.GONE : View.VISIBLE);
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initViews(view);
@@ -104,6 +117,7 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
         });
 
         btnFilterCampaign.setOnClickListener(this);
+        loadTodayCampaign();
     }
 
     private void initViews(View view){
@@ -111,6 +125,7 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
         editEndDate = view.findViewById(R.id.etEndDate);
         mRecyclerviewCampaign = view.findViewById(R.id.recyclerViewCampaign);
         btnFilterCampaign = view.findViewById(R.id.btnFilterCampaign);
+        noContent = view.findViewById(R.id.noContent);
     }
 
     private void initRecyclerView(List<CampaignModel> campaigns){
@@ -130,12 +145,14 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
             String endDate = editEndDate.getText().toString();
 
             if(startDate == null || startDate.isEmpty()) {
-                Toast.makeText(getActivity(), "Start date is required.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Start date is required.",
+                        Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if(endDate == null || endDate.isEmpty()) {
-                Toast.makeText(getActivity(), "End date is required.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "End date is required.",
+                        Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -151,6 +168,39 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
             mCampaignViewModel.fetchFilteredCampaign( setting.getToken(), model);
             subscribe();
         }
+    }
+
+    private void loadTodayCampaign() {
+        showLoading();
+        mCampaignViewModel = new ViewModelProvider(this).get(CampaignViewModel.class);
+        mResponse = mCampaignViewModel.getTodayCampaignResponse();
+
+        mResponse.observe(getViewLifecycleOwner(), new Observer<DataServerResponse<CampaignModel>>() {
+            @Override
+            public void onChanged(DataServerResponse<CampaignModel> response) {
+                hideLoading();
+                mResponse.removeObserver(this);
+                if(mResponse.hasActiveObservers()){
+                    mResponse.removeObservers(getActivity());
+                }
+
+                if(response == null){
+                    showErrorPage();
+                    return;
+                }
+
+                if(response.isSuccessful()){
+
+                    if(response.getDataList() != null && response.getDataList().size() > 0) {
+                        initRecyclerView(response.getDataList());
+                        noContent(true);
+                    }
+                    else
+                        noContent(false);
+                }
+
+            }
+        });
     }
 
     private void subscribe() {
@@ -174,8 +224,15 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
                 Log.d(Constants.TAG, "Before successfully");
 
                 if(response.isSuccessful()){
-                    initRecyclerView(response.getDataList());
+                    if(response.getDataList().size() > 0 ){
+                        initRecyclerView(response.getDataList());
+                        noContent(true);
+                        return;
+                    }
+
                 }
+
+                noContent(false);
 
             }
         });

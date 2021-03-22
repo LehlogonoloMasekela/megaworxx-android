@@ -17,6 +17,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
+        <FrameLayout
+            android:visibility="visible"
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/noContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            >
+            <include layout="@layout/view_no_content" />
+        </FrameLayout>
+
     </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

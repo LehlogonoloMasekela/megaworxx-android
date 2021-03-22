@@ -35,6 +35,10 @@ public class StockItem extends BaseEntity implements Serializable {
         this.yearCreated = yearCreated;
     }
 
+    public StockItem(String id, String name) {
+        super(id, name);
+    }
+
     public String getMakeId() {
         return makeId;
     }

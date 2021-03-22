@@ -36,6 +36,8 @@ public class Setting {
     private String USER_ID = "USER_ID";
     private String TODAY_DATE = "TODAY_DATE";
     private String COORDINATES = "COORDINATES";
+    private String FIREBASE_TOKEN = "FIREBASE_TOKEN";
+    private String SUBSCRIBE_NOTIFICATION_TOPIC = "SUBSCRIBE_NOTIFICATION_TOPIC";
     private final ConnectivityManager connectivityManager;
     private  NetworkInfo netInfo;
 
@@ -118,10 +120,26 @@ public class Setting {
         editor.apply();
     }
 
+    public void setFireBaseToken(boolean isSaved){
+        pref = mContext.getSharedPreferences(SETTINGS, Context.MODE_PRIVATE);
+        editor = pref.edit();
+        editor.putBoolean(FIREBASE_TOKEN, isSaved);
+        editor.apply();
+    }
 
     public String getTodayDate(){
         pref = mContext.getSharedPreferences(SETTINGS, Context.MODE_PRIVATE);
         return pref.getString(TODAY_DATE,"");
+    }
+
+    public boolean isFirebaseTokenSaved(){
+        pref = mContext.getSharedPreferences(SETTINGS, Context.MODE_PRIVATE);
+        return pref.getBoolean(FIREBASE_TOKEN,false);
+    }
+
+    public boolean isSubscribedToFirebase(){
+        pref = mContext.getSharedPreferences(SETTINGS, Context.MODE_PRIVATE);
+        return pref.getBoolean(SUBSCRIBE_NOTIFICATION_TOPIC,false);
     }
 
     public String getToken(){
@@ -132,6 +150,13 @@ public class Setting {
     public String getUserId(){
         pref = mContext.getSharedPreferences(SETTINGS, Context.MODE_PRIVATE);
         return pref.getString(USER_ID,"none");
+    }
+
+    public void setSubscribeToFirebase(boolean isSuccessful){
+        pref = mContext.getSharedPreferences(SETTINGS, Context.MODE_PRIVATE);
+        editor = pref.edit();
+        editor.putBoolean(SUBSCRIBE_NOTIFICATION_TOPIC,isSuccessful);
+        editor.apply();
     }
 
     public void setToken(String value){

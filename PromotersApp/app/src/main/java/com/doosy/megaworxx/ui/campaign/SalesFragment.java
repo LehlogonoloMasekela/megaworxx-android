@@ -3,6 +3,7 @@ package com.doosy.megaworxx.ui.campaign;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -43,9 +44,11 @@ public class SalesFragment extends BaseFragment {
     private SaleViewModel saleViewModel;
     private LiveData<DataServerResponse<StockSaleBase>> mResponse;
     private CampaignModel campaignModel;
+    private FrameLayout noContent;
+
 
     public SalesFragment() {
-
+        setRetainInstance(true);
     }
 
     public static SalesFragment newInstance() {
@@ -63,6 +66,17 @@ public class SalesFragment extends BaseFragment {
         mCampaign = ((CampaignActivity)getActivity()).getCampaign();
     }
 
+    @Override
+    public void retryLoad() {
+        loadData();
+    }
+
+    @Override
+    public void noContent(boolean hasContent){
+        mRecyclerviewSales.setVisibility(hasContent ? View.VISIBLE : View.GONE);
+        noContent.setVisibility(hasContent ? View.GONE : View.VISIBLE);
+    }
+
     public void loadData(){
         showLoading();
         saleViewModel.fetchPromoterSale(setting.getToken(), campaignModel.getPromoterId(),
@@ -73,11 +87,18 @@ public class SalesFragment extends BaseFragment {
             public void onChanged(DataServerResponse<StockSaleBase> response) {
                 hideLoading();
                 if(response != null && response.isSuccessful()){
-                    initRecyclerView(response.getDataList());
-                    mSalesAdapter.notifyDataSetChanged();
-                    displayStatus();
-                }
+                    if(response.getDataList().size() > 0) {
+                        initRecyclerView(response.getDataList());
+                        mSalesAdapter.notifyDataSetChanged();
+                        displayStatus();
+                        noContent(true);
 
+                    }else {
+                        noContent(false);
+                    }
+                    return;
+                }
+                showErrorPage();
             }
         });
     }
@@ -92,15 +113,18 @@ public class SalesFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initViews(view);
+        loadData();
         if(mCampaign != null){
             String date = getActivity().getString(R.string.campaign_date, Util.formatDate(mCampaign.getDateCreated()) );
             displayCampaignDate(date);
         }
-        loadData();
+        displayStatus(null);
+
     }
 
     private void initViews(View view){
         mRecyclerviewSales = view.findViewById(R.id.recyclerViewCampaign);
+        noContent = view.findViewById(R.id.noContent);
     }
 
     private void initRecyclerView(List<StockSaleBase> sales){

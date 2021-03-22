@@ -27,17 +27,20 @@ public class ApiClient<T> {
     private ApiTokenRunnable mApiTokenRunnable;
 
     public ApiClient(Call<T> call){
-        mDataResponse = new MutableLiveData<>();
-        mResponse = new MutableLiveData<>();
+         init();
         mTokenResponse = new MutableLiveData<>();
         mCall = call;
     }
 
     public ApiClient(){
-        mDataResponse = new MutableLiveData<>();
-        mResponse = new MutableLiveData<>();
+        init();
         mTokenResponse = new MutableLiveData<>();
         mCall = null;
+    }
+
+    private void init() {
+        mDataResponse = new MutableLiveData<>();
+        mResponse = new MutableLiveData<>();
     }
 
     public LiveData<T> getDataResponse(){
@@ -53,6 +56,7 @@ public class ApiClient<T> {
     }
 
     public void processToken(){
+
         if(mApiTokenRunnable != null){
             mApiTokenRunnable = null;
         }
@@ -72,6 +76,7 @@ public class ApiClient<T> {
     }
 
     public void processData(){
+        init();
         if(mApiDataRunnable != null){
             mApiDataRunnable = null;
         }
@@ -91,6 +96,7 @@ public class ApiClient<T> {
     }
 
     public void processData(Call<T> callBack){
+        init();
         mCall = callBack;
 
         if(mApiDataRunnable != null){
@@ -111,7 +117,7 @@ public class ApiClient<T> {
     }
 
     public void process(){
-
+        init();
         if(mApiRunnable != null){
             mApiRunnable = null;
         }
@@ -130,6 +136,7 @@ public class ApiClient<T> {
     }
 
     public void process(Call<T> callBack){
+        init();
         mCall = callBack;
 
         if(mApiRunnable != null){
@@ -185,7 +192,7 @@ public class ApiClient<T> {
                 mDataResponse.postValue(null);
 
             }catch (Exception e){
-                Log.d(Constants.TAG,"Exception: " + e.fillInStackTrace());
+
                 mDataResponse.postValue(null);
             }
 

@@ -10,7 +10,6 @@
             android:icon="@drawable/ic_home"
             android:title="@string/menu_home" />
 
-
         <item
             android:textColor="@color/colorBlack"
             android:id="@+id/nav_campaign"
@@ -25,5 +24,6 @@
 
 
     </group>
+
 
 </menu>

@@ -60,7 +60,7 @@ public class AddQuestionnaireActivity extends BaseActivity implements View.OnCli
         mQuestionnaireViewModel = new ViewModelProvider(this).get(QuestionnaireViewModel.class);
 
         initViews();
-
+        showLoading();
         String keyCampaign = getString(R.string.key_campaign);
         String keyCampaignModel = getString(R.string.key_campaign_model);
         String keyQuestionnaireType = getString(R.string.key_campaign_page_type);
@@ -72,21 +72,37 @@ public class AddQuestionnaireActivity extends BaseActivity implements View.OnCli
 
         btnSave.setOnClickListener(this);
         btnCancel.setOnClickListener(this);
+        findViewById(R.id.toolbar).setOnClickListener(this);
         showLoading();
 
         if(getIntent().hasExtra(keyQuestionnaireType)){
             mQuestionnaireType = (QuestionnaireType) getIntent()
                     .getSerializableExtra(keyQuestionnaireType);
-
-            if(mQuestionnaireType == QuestionnaireType.FeedBack)
-                mQuestionnaireViewModel.fetchFeedBackForm(settings.getToken());
-            else if(mQuestionnaireType == QuestionnaireType.Survey)
-                mQuestionnaireViewModel.fetchSurveyForm(settings.getToken());
-
+            loadData();
             displayInfo();
         }
 
+
+    }
+
+    private void loadData(){
+
+        if(mQuestionnaireType == QuestionnaireType.FeedBack)
+            mQuestionnaireViewModel.fetchFeedBackForm(settings.getToken());
+        else if(mQuestionnaireType == QuestionnaireType.Survey)
+            mQuestionnaireViewModel.fetchSurveyForm(settings.getToken());
+
         fetchForm();
+    }
+
+    @Override
+    public void displayPage(boolean hasContent) {
+
+    }
+
+    @Override
+    public void retryLoad() {
+        loadData();
     }
 
     private void displayInfo(){
@@ -117,14 +133,14 @@ public class AddQuestionnaireActivity extends BaseActivity implements View.OnCli
 
     private void fetchForm() {
         mFormResponse = mQuestionnaireViewModel.getQuestionsResponse();
-
         mFormResponse.observe(this, new Observer<DataServerResponse<Form>>() {
             @Override
             public void onChanged(DataServerResponse<Form> formDataServerResponse) {
                 hideLoading();
                 if(formDataServerResponse == null){
                     //Show appropriate message here
-                    Log.d(Constants.TAG, "Returned null here");
+                    Log.d(Constants.TAG, "Display error here");
+                    displayErrorPage();
                     return;
                 }
 
@@ -165,7 +181,9 @@ public class AddQuestionnaireActivity extends BaseActivity implements View.OnCli
         if(v.getId() == R.id.btnSave){
             saveAnswers();
         }else if(v.getId() == R.id.btnCancel){
-            finish();
+            super.onBackPressed();
+        }else if(v.getId() == R.id.toolbar){
+            super.onBackPressed();
         }
     }
 
@@ -201,8 +219,7 @@ public class AddQuestionnaireActivity extends BaseActivity implements View.OnCli
     private void saveAnswers() {
 
         if(!isFormValid()){
-            Snackbar.make(findViewById(R.id.mainLayout), error.toString(),
-                    BaseTransientBottomBar.LENGTH_SHORT ).show();
+            showError(error.toString());
             return;
         }
 

@@ -56,6 +56,7 @@ public class StockApiClient {
     }
 
     public void fetchCampaignStock(String token, String campaignId){
+        mCampaignStockResponse = new MutableLiveData<>();
         if(mStockRunnable != null){
             mStockRunnable = null;
         }
@@ -75,7 +76,7 @@ public class StockApiClient {
     }
 
     public void fetchCampaignPromoterStock(String token, String promoterId, String campaignId, String campaignLocationId){
-
+        mCampaignPromoterStockResponse = new MutableLiveData<>();
         if(mPromoterStockRunnable != null){
             mPromoterStockRunnable = null;
         }
@@ -134,17 +135,14 @@ public class StockApiClient {
                 if(cancelRequest){
                     return;
                 }
-                Log.d(Constants.TAG,"Before if : "+response.body());
                 if(response.code() == 200){
 
                     DataServerResponse<StockSaleBase> serverResponse = ((DataServerResponse<StockSaleBase>)(response.body()));
 
                     if(serverResponse != null){
                         mCampaignStockResponse.postValue(serverResponse);
-                        Log.d(Constants.TAG,"Array size: "+serverResponse.getDataList().size());
                         return;
                     }
-                    Log.d(Constants.TAG,"Model: "+response.body());
                 }
 
                 mCampaignStockResponse.postValue(null);

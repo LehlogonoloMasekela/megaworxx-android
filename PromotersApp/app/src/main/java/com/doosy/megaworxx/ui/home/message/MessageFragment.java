@@ -1,7 +1,8 @@
-package com.doosy.megaworxx.ui.message;
+package com.doosy.megaworxx.ui.home.message;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,7 +30,7 @@ public class MessageFragment extends BaseFragment {
 
     private RecyclerView mRecyclerviewMessage;
     private MessageAdapter mMessageAdapter;
-
+    private FrameLayout noContent;
 
     public MessageFragment (){
 
@@ -45,7 +46,12 @@ public class MessageFragment extends BaseFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         messageViewModel = new ViewModelProvider(this).get(MessageViewModel.class);
-        messageViewModel.fetchMessages(setting.getToken(), setting.getUserId());
+
+    }
+
+    @Override
+    public void retryLoad() {
+        loadData();
     }
 
     @Override
@@ -61,32 +67,48 @@ public class MessageFragment extends BaseFragment {
         if(mResponse != null){
             initRecyclerView();
         }else{
-            subscribe();
+            loadData();
         }
     }
 
-    private void subscribe(){
-        showLoading();
-        mResponse = messageViewModel.getDataResponse();
+    @Override
+    public void noContent(boolean hasContent){
+        mRecyclerviewMessage.setVisibility(hasContent ? View.VISIBLE : View.GONE);
+        noContent.setVisibility(hasContent ? View.GONE : View.VISIBLE);
+    }
 
+
+    private void loadData(){
+        showLoading();
+        messageViewModel.fetchMessages(setting.getToken(), setting.getUserId());
+        mResponse = messageViewModel.getDataResponse();
         mResponse.observe(getViewLifecycleOwner(), new Observer<DataServerResponse<Message>>() {
             @Override
             public void onChanged(DataServerResponse<Message> response) {
                 hideLoading();
+                if(response == null){
+                    showErrorPage();
+                    return;
+                }
+
                 if(response != null && response.isSuccessful()){
                     if(response.getDataList().size() > 0){
                         mMessages = response.getDataList();
                         initRecyclerView();
+                        noContent(true);
+
                     }else{
-                        //No data here
+                        noContent(false);
                     }
                 }
+
             }
         });
     }
 
     private void initViews(View view){
         mRecyclerviewMessage = view.findViewById(R.id.recyclerViewMessages);
+        noContent = view.findViewById(R.id.noContent);
     }
 
     private void initRecyclerView(){

@@ -2,11 +2,15 @@ package com.doosy.megaworxx.ui.home;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -29,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends BaseFragment {
-    private View cardCampaign;
+
     private CampaignViewModel mCampaignViewModel;
     private LiveData<DataServerResponse<CampaignModel>> mResponse;
     private List<CampaignModel> mCampaignModels = new ArrayList<>();
@@ -37,9 +41,9 @@ public class HomeFragment extends BaseFragment {
 
     private RecyclerView mRecyclerviewCampaign;
     private CampaignAdapter mCampaignAdapter;
-    private FrameLayout mFrameLayout;
 
     private TokenViewModel mTokenViewModel;
+    private FrameLayout noContent;
 
     public HomeFragment (){
         setRetainInstance(true);
@@ -55,12 +59,29 @@ public class HomeFragment extends BaseFragment {
         return R.layout.fragment_home;
     }
 
+
+    @Override
+    public void noContent(boolean hasContent){
+        mRecyclerviewCampaign.setVisibility(hasContent ? View.VISIBLE : View.GONE);
+        noContent.setVisibility(hasContent ? View.GONE : View.VISIBLE);
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mCampaignViewModel = ViewModelProviders.of(this).get(CampaignViewModel.class);
         mTokenViewModel = ViewModelProviders.of(this).get(TokenViewModel.class);
     }
+
+    @Override
+    public void retryLoad() {
+        if(mTokenTimer.isTokenAlive()){
+            loadData();
+        }else{
+            getToken();
+        }
+    }
+
 
     @Override
     public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
@@ -70,14 +91,11 @@ public class HomeFragment extends BaseFragment {
         showLoading();
 
         if(mTokenTimer.isTokenAlive()){
-            Log.d(Constants.TAG, "Token still fresh");
-
-            mCampaignViewModel.fetchTodayCampaign(setting.getToken(), getModel());
+            loadData();
         }else{
-            Log.d(Constants.TAG, "Token has expired");
             getToken();
         }
-        subscribe();
+
     }
 
     private TodayCampaignModel getModel(){
@@ -87,7 +105,6 @@ public class HomeFragment extends BaseFragment {
     }
 
     private void getToken(){
-        String[] credentials = getResources().getStringArray(R.array.client_token);
 
         mTokenViewModel.processApi();
         mTokenResponse = mTokenViewModel.getResponse();
@@ -95,22 +112,26 @@ public class HomeFragment extends BaseFragment {
         mTokenResponse.observe(getViewLifecycleOwner(), new Observer<DataServerResponse<ClientToken>>() {
             @Override
             public void onChanged(DataServerResponse<ClientToken> response) {
-                if(response != null && response.getData() != null){
-                    //Store token and update time to expire
-                    String token = response.getData().getAccessToken();
-                    setting.setToken(token);
-                    mTokenTimer.setTime(2);
-                    mCampaignViewModel.fetchTodayCampaign(setting.getToken(), getModel());
+                if(response != null ){
+                    if(response.getData() != null)
+                    {
+                        //Store token and update time to expire
+                        String token = response.getData().getAccessToken();
+                        setting.setToken(token);
+                        mTokenTimer.setTime(2);
+                        loadData();
+                    }else{
+                        Toast.makeText(getContext(), "Failed to authorize.", Toast.LENGTH_SHORT).show();
+                    }
                 }else{
-                    //Implement messages when the token was not retrieved
-                   // Log.d(Constants.TAG, "A huna token yo waniwaho.");
+                    showErrorPage();
                 }
             }
         });
     }
 
-    private void subscribe() {
-
+    private void loadData() {
+        mCampaignViewModel.fetchTodayCampaign(setting.getToken(), getModel());
         mResponse = mCampaignViewModel.getTodayCampaignResponse();
 
         mResponse.observe(getViewLifecycleOwner(), new Observer<DataServerResponse<CampaignModel>>() {
@@ -122,33 +143,29 @@ public class HomeFragment extends BaseFragment {
                     mResponse.removeObservers(getActivity());
                 }
 
-                if(response == null){
-                    Log.d(Constants.TAG, "Null");
-                    return;
-                }
-
                 if(response.isSuccessful()){
                     mCampaignModels = response.getDataList();
                     if(mCampaignModels != null && mCampaignModels.size() > 0) {
-                        noContent(true);
                         initRecyclerView();
+                        noContent(true);
                     }
                     else
                         noContent(false);
+
+                    return;
                 }
+
+                showErrorPage();
 
             }
         });
     }
 
-    private void noContent(boolean hasContent){
-        mRecyclerviewCampaign.setVisibility(hasContent ? View.VISIBLE : View.GONE);
-        mFrameLayout.setVisibility(hasContent ? View.GONE : View.VISIBLE);
-    }
+
 
     private void initViews(View view){
         mRecyclerviewCampaign = view.findViewById(R.id.recyclerViewCampaign);
-        mFrameLayout = view.findViewById(R.id.noContent);
+        noContent = view.findViewById(R.id.noContent);
     }
 
     private void initRecyclerView(){

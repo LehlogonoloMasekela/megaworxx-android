@@ -2,6 +2,7 @@ package com.doosy.megaworxx.ui.campaign;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -37,9 +38,11 @@ public class StockFragment extends BaseFragment {
     private StockViewModel stockViewModel;
     private LiveData<DataServerResponse<StockSaleBase>> mResponse;
     private CampaignModel campaignModel;
+    private FrameLayout noContent;
+
 
     public StockFragment(){
-
+        setRetainInstance(true);
     }
 
     public static StockFragment newInstance() {
@@ -56,6 +59,11 @@ public class StockFragment extends BaseFragment {
         mCampaign = ((CampaignActivity)getActivity()).getCampaign();
     }
 
+    @Override
+    public void retryLoad() {
+        loadData();
+    }
+
     public void loadData(){
         showLoading();
         stockViewModel.fetchCampaignPromoterStock(setting.getToken(), campaignModel.getPromoterId(),
@@ -67,13 +75,28 @@ public class StockFragment extends BaseFragment {
                 hideLoading();
                 if(response != null && response.isSuccessful()){
 
-                    initRecyclerView(response.getDataList());
-                    mStockAdapter.notifyDataSetChanged();
+                  if(response.getDataList().size() > 0){
+                      initRecyclerView(response.getDataList());
+                      mStockAdapter.notifyDataSetChanged();
+                      displayStatus();
+                      noContent(true);
+
+                  }else{
+                      noContent(false);
+                  }
                     displayStatus();
+                  return;
                 }
+                showErrorPage();
 
             }
         });
+    }
+
+    @Override
+    public void noContent(boolean hasContent){
+        mRecyclerviewStock.setVisibility(hasContent ? View.VISIBLE : View.GONE);
+        noContent.setVisibility(hasContent ? View.GONE : View.VISIBLE);
     }
 
     @Override
@@ -93,6 +116,7 @@ public class StockFragment extends BaseFragment {
             displayCampaignDate(date);
         }
 
+
     }
 
     public void displayStatus(){
@@ -102,6 +126,7 @@ public class StockFragment extends BaseFragment {
 
     private void initViews(View view){
         mRecyclerviewStock = view.findViewById(R.id.recyclerViewCampaign);
+        noContent = view.findViewById(R.id.noContent);
     }
 
     private void initRecyclerView(List<StockSaleBase> stocks){

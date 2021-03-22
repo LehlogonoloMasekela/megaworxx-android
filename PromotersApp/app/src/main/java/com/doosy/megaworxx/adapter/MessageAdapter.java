@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,8 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.doosy.megaworxx.R;
 import com.doosy.megaworxx.entity.Message;
-import com.doosy.megaworxx.entity.Survey;
-import com.doosy.megaworxx.ui.message.MessageActivity;
+import com.doosy.megaworxx.ui.home.message.MessageActivity;
 
 import java.util.ArrayList;
 import java.util.List;

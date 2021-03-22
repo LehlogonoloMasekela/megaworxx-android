@@ -50,6 +50,11 @@ public class StockSaleBase implements Serializable {
     @Expose()
     protected String deviceId;
 
+    public StockSaleBase() {
+        this.quantity = 0;
+        this.price = 0;
+    }
+
     public StockSaleBase(String id, String dateCreated, StockItem stockItem, String campaignDateId,
                          String campaignPromoterId, String campaignLocationId, String campaignId, String stockItemId) {
         this.id = id;

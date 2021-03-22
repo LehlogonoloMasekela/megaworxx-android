@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/colorWhite"
-    tools:context=".ui.filter.FilterFragment">
+    tools:context=".ui.home.FilterFragment">
 
     <ScrollView
         android:orientation="horizontal"
@@ -25,10 +25,11 @@
                 android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Filter more campaignModels"
+                android:text="Campaigns"
                 android:textSize="22sp" />
 
             <LinearLayout
+                android:visibility="gone"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -87,6 +88,7 @@
             </LinearLayout>
 
             <Button
+                android:visibility="gone"
                 android:id="@+id/btnFilterCampaign"
                 style="@style/ButtonStyle"
                 android:layout_marginTop="20dp"
@@ -104,6 +106,17 @@
                     android:id="@+id/recyclerViewCampaign"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
+
+                <FrameLayout
+                    android:visibility="gone"
+                    android:layout_gravity="center_horizontal"
+                    android:id="@+id/noContent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    >
+                    <include layout="@layout/view_no_content" />
+                </FrameLayout>
 
                 <include android:visibility="gone"  android:id="@+id/cardCampaign" layout="@layout/campaign_item" />
             </LinearLayout>

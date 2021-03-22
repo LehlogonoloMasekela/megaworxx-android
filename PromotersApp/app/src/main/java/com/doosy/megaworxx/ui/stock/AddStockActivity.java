@@ -49,33 +49,59 @@ public class AddStockActivity extends BaseActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_stock);
         stockViewModel = new ViewModelProvider(this).get(StockViewModel.class);
+
         initViews();
 
         String keyCampaign = getString(R.string.key_campaign);
         String keyCampaignModel = getString(R.string.key_campaign_model);
-
+        showLoading();
         if(getIntent().hasExtra(keyCampaign) && getIntent().hasExtra(keyCampaignModel)) {
             mCampaign = (Campaign) getIntent().getSerializableExtra(keyCampaign);
             mCampaignModel = (CampaignModel) getIntent().getSerializableExtra(keyCampaignModel);
             MaterialToolbar toolbar = findViewById(R.id.toolbar);
             toolbar.setTitle(mCampaignModel.getCampaignName());
-            stockViewModel.fetchCampaignStock(settings.getToken(), mCampaign.getId());
-            mDataResponse = stockViewModel.getCampaignStock();
-
-            mDataResponse.observe(this, new Observer<DataServerResponse<StockSaleBase>>() {
-                @Override
-                public void onChanged(DataServerResponse<StockSaleBase> response) {
-                    if(response != null && response.isSuccessful()){
-                        mStocks = response.getDataList();
-                        toAddStockModel();
-                    }
-                }
-            });
+            loadData();
         }
 
-
+        findViewById(R.id.toolbar).setOnClickListener(this);
         btnSave.setOnClickListener(this);
         btnCancel.setOnClickListener(this);
+
+    }
+
+    private void loadData(){
+        stockViewModel.fetchCampaignStock(settings.getToken(), mCampaign.getId());
+        mDataResponse = stockViewModel.getCampaignStock();
+
+        mDataResponse.observe(this, new Observer<DataServerResponse<StockSaleBase>>() {
+            @Override
+            public void onChanged(DataServerResponse<StockSaleBase> response) {
+                hideLoading();
+
+                if(response == null){
+                    displayErrorPage();
+                    return;
+                }
+
+                if(response.isSuccessful()){
+                    mStocks = response.getDataList();
+                    toAddStockModel();
+                    displayPage(true);
+                }else{
+                    displayPage(false);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void displayPage(boolean hasContent) {
+
+    }
+
+    @Override
+    public void retryLoad() {
+        loadData();
     }
 
     private void initViews(){
@@ -86,6 +112,7 @@ public class AddStockActivity extends BaseActivity implements View.OnClickListen
 
     private void toAddStockModel(){
         if(mStocks == null) return;
+
         mAddStockModels = new ArrayList<>();
         for (StockSaleBase stock: mStocks) {
 
@@ -94,8 +121,8 @@ public class AddStockActivity extends BaseActivity implements View.OnClickListen
                     mCampaignModel.getCampaignLocationId(), settings.getsCoordinates(),
                     stock.getStockItemId(),stock.getStockItem().getName());
             mAddStockModels.add(model);
-            Log.d(Constants.TAG, "StockId: " +stock.getStockItem().getId());
         }
+
         initRecyclerView();
     }
 
@@ -106,6 +133,18 @@ public class AddStockActivity extends BaseActivity implements View.OnClickListen
 
         mAddStockAdapter = new AddStockAdapter(mAddStockModels,this);
         recyclerViewStock.setAdapter(mAddStockAdapter);
+        recyclerViewStock.setItemViewCacheSize(mAddStockModels.size());
+    }
+
+    private List<AddStockModel> getFilteredStocks(){
+        List<AddStockModel> stockModels = new ArrayList<>();
+
+        for(AddStockModel stock: mAddStockModels){
+            if(stock.getQuantity() > 0)
+                stockModels.add(stock);
+        }
+
+        return stockModels;
     }
 
     @Override
@@ -114,7 +153,16 @@ public class AddStockActivity extends BaseActivity implements View.OnClickListen
             finish();
         }else if(v.getId() == R.id.btnSave){
             showLoading();
-            saveStock();
+            List<AddStockModel> stocks = getFilteredStocks();
+
+            if(stocks.size() == 0){
+                showError("You must provide at least one item quantity.");
+                return;
+            }
+
+            saveStock(stocks);
+        }else if(v.getId() == R.id.toolbar){
+            super.onBackPressed();
         }
     }
 
@@ -122,9 +170,9 @@ public class AddStockActivity extends BaseActivity implements View.OnClickListen
         mAddStockModels.get(position).setQuantity(qty);
     }
 
-    private void saveStock(){
+    private void saveStock(List<AddStockModel> stockModels){
 
-        stockViewModel.addStock(settings.getToken(), mAddStockModels);
+        stockViewModel.addStock(settings.getToken(), stockModels);
         mResponse = stockViewModel.getResponse();
         mResponse.observe(this, new Observer<ServerResponse>() {
             @Override

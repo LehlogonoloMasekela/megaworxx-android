@@ -21,56 +21,58 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-
         app:itemIconTint="@color/navigation_drawer_selector"
         app:itemTextColor="@color/colorBlack"
         app:headerLayout="@layout/nav_header_main"
-        app:menu="@menu/activity_main_drawer" >
+        app:menu="@menu/activity_main_drawer"
+        >
+
         <LinearLayout
-            android:paddingBottom="10dp"
-            android:layout_gravity="bottom"
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:orientation="vertical">
+
             <View
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
                 style="@style/DividerH"
-                />
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp" />
+
             <LinearLayout
 
-                android:focusable="true"
-                android:clickable="true"
-                android:background="@drawable/navigation_item_selector_background"
                 android:id="@+id/nav_sign_out"
-                android:gravity="center_vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/navigation_item_selector_background"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
                 android:orientation="horizontal"
+                android:paddingStart="20dp"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
-                android:paddingStart="20dp"
                 android:paddingEnd="20dp"
-                >
+                android:layout_marginBottom="10dp">
 
                 <ImageView
 
-                    android:src="@drawable/ic_exit_2"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
+                    android:src="@drawable/ic_exit_2"
                     app:tint="@color/colorPrimaryDark" />
+
                 <TextView
-                    android:textColor="@color/colorBlack"
-                    android:layout_marginStart="30dp"
-                    android:layout_marginEnd="30dp"
-                    android:textSize="14sp"
                     android:id="@+id/logout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginEnd="30dp"
                     android:gravity="center"
-                    android:text="Sign out" />
+                    android:text="Sign out"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="14sp" />
             </LinearLayout>
         </LinearLayout>
     </com.google.android.material.navigation.NavigationView>

@@ -3,6 +3,7 @@ package com.doosy.megaworxx.ui;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -29,10 +30,12 @@ public abstract class BaseActivity  extends AppCompatActivity {
     private TextView tvSuccessMessage;
     private LinearLayout errorLayout;
     private TextView tvErrorMessage;
+    private LinearLayout connectionLayout;
 
     protected Setting settings;
     protected TokenTimer mTokenTimer;
-
+    private TextView txtReload;
+    public TextView noContentCaption;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,23 +56,40 @@ public abstract class BaseActivity  extends AppCompatActivity {
         initViews();
     }
 
+    public abstract void displayPage(boolean hasContent);
+
+    public abstract void retryLoad();
+
+    public void displayErrorPage(){
+        resetAll();
+        noContentCaption.setText(getString(R.string.general_error_message));
+        frameLayout.setVisibility(View.GONE);
+        connectionLayout.setVisibility(View.VISIBLE);
+        txtReload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showLoading();
+                retryLoad();
+            }
+        });
+    }
+
     private void initViews(){
         successLayout = constraintLayout.findViewById(R.id.successLayout);
         tvSuccessMessage = constraintLayout.findViewById(R.id.tvSuccessMessage);
         errorLayout = constraintLayout.findViewById(R.id.errorLayout);
         tvErrorMessage = constraintLayout.findViewById(R.id.tvErrorMessage);
+        connectionLayout = constraintLayout.findViewById(R.id.connectionLayout);
+        txtReload = constraintLayout.findViewById(R.id.txtRetry);
+        noContentCaption = constraintLayout.findViewById(R.id.tvConnectionMessage);
     }
 
     private void resetAll(){
+        connectionLayout.setVisibility(View.GONE);
         errorLayout.setVisibility(View.GONE);
         successLayout.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.GONE);
         frameLayout.setVisibility(View.VISIBLE);
-    }
-
-    public void showNoInternet(){
-        resetAll();
-        frameLayout.setVisibility(View.GONE);
     }
 
     public void showError(String errorMsg){
@@ -84,6 +104,8 @@ public abstract class BaseActivity  extends AppCompatActivity {
         }, Constants.MESSAGE_TIMEOUT);
 
     }
+
+
 
     public void showSuccess(String successMessage){
         resetAll();

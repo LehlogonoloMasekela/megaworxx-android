@@ -15,10 +15,10 @@ import com.doosy.megaworxx.util.Constants;
 
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-    private SurveyFragment mSurveyFragment;
-    private FeedbackFragment mFeedbackFragment;
-    private StockFragment mStockFragment;
-    private SalesFragment mSalesFragment;
+    public SurveyFragment mSurveyFragment;
+    public FeedbackFragment mFeedbackFragment;
+    public StockFragment mStockFragment;
+    public SalesFragment mSalesFragment;
 
     @StringRes
     private static final int[] TAB_TITLES = new int[]

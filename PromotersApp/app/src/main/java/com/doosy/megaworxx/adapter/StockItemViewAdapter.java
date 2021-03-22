@@ -22,10 +22,12 @@ import java.util.List;
 public class StockItemViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<StockSaleBase> mStockSaleBases = new ArrayList<>();
     private Context mContext;
+    private int mType;
 
-    public StockItemViewAdapter(List<StockSaleBase> stockSaleBases, Context activity) {
+    public StockItemViewAdapter(List<StockSaleBase> stockSaleBases, Context activity, int type) {
         mContext = activity;
         mStockSaleBases = stockSaleBases;
+        mType= type;
     }
 
     @NonNull
@@ -41,13 +43,19 @@ public class StockItemViewAdapter extends RecyclerView.Adapter<RecyclerView.View
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int position) {
         final StockSaleBase model = mStockSaleBases.get(position);
 
-        Log.d(Constants.TAG, model.toString());
-
-        String name = model.getStockItem() == null ? "No make" : model.getStockItem().getName();
+        String description = model.getStockItem() == null ? "No Description" : model.getStockItem().getName();
+        String name = model.getStockItem() == null ?  "No name" :
+                (model.getStockItem().getMake() == null) ? "No name" : model.getStockItem().getMake().getName();
 
         ((ViewHolder)holder).tvItemName.setText(name);
-        ((ViewHolder)holder).tvItemDesc.setText(name);
-        ((ViewHolder)holder).tvQty.setText(String.valueOf(model.getQuantity()));
+        ((ViewHolder)holder).tvItemDesc.setText(description);
+
+        if(mType == 1){
+            ((ViewHolder)holder).tvQty.setText(String.valueOf(model.getQuantity()));
+        }else if(mType == 2){
+            ((ViewHolder)holder).tvQty.setText(String.valueOf(model.getPrice()));
+            Log.d(Constants.TAG, "Price: " + model.getPrice());
+        }
 
     }
 

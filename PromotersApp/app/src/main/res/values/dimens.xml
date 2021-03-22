@@ -50,6 +50,7 @@
     <dimen name="error_message_vertical_margin">2dp</dimen>
     <dimen name="check_in_time_text_size">16sp</dimen>
     <dimen name="text_margin">16dp</dimen>
+    <dimen name="stock_item_view_horizontal_padding">10dp</dimen>
 
 
 </resources>

@@ -22,6 +22,7 @@ import com.doosy.megaworxx.model.DataServerResponse;
 import com.doosy.megaworxx.model.SaleModel;
 import com.doosy.megaworxx.model.ServerResponse;
 import com.doosy.megaworxx.ui.BaseActivity;
+import com.doosy.megaworxx.util.validations.Validate;
 import com.doosy.megaworxx.viewmodel.ItemViewModel;
 import com.doosy.megaworxx.viewmodel.SaleViewModel;
 import com.google.android.material.appbar.MaterialToolbar;
@@ -29,7 +30,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AddSalesActivity extends BaseActivity {
+public class AddSalesActivity extends BaseActivity implements View.OnClickListener {
 
     private Spinner spinner;
     private ItemViewModel itemViewModel;
@@ -54,7 +55,7 @@ public class AddSalesActivity extends BaseActivity {
         mSaleViewModel = new ViewModelProvider(this).get(SaleViewModel.class);
         itemViewModel = new ViewModelProvider(this).get(ItemViewModel.class);
         initViews();
-
+        showLoading();
         String keyCampaign = getString(R.string.key_campaign);
         String keyCampaignModel = getString(R.string.key_campaign_model);
 
@@ -65,12 +66,14 @@ public class AddSalesActivity extends BaseActivity {
             toolbar.setTitle(mCampaignModel.getCampaignName());
         }
 
+
         itemViewModel.fetchStockItems(settings.getToken());
         mDataResponse = itemViewModel.getDataResponse();
 
         mDataResponse.observe(this, new Observer<DataServerResponse<StockItem>>() {
             @Override
             public void onChanged(DataServerResponse<StockItem> response) {
+                hideLoading();
                 if(response != null && response.isSuccessful()){
                     mStockItems = response.getDataList();
                     initSpinner();
@@ -101,10 +104,27 @@ public class AddSalesActivity extends BaseActivity {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String deviceId = etDeviceId.getText().toString();
-                String price = etPrice.getText().toString();
 
-                //Validation here
+                if(mSelectedStockItemId == null || mSelectedStockItemId.isEmpty()){
+                    showError("Please select stock item before you can proceed.");
+                    return;
+                }
+
+                String deviceId = etDeviceId.getText().toString();
+                if(deviceId == null || deviceId.isEmpty()){
+                    showError("IMEI number is required.");
+                    return;
+                }else if(!Validate.isDigitOnly(deviceId)){
+                    showError("Please provide valid device Id before you can proceed.");
+                    return;
+                }
+
+                String price = etPrice.getText().toString();
+                if(price == null || price.isEmpty() || !Validate.isCurrencyValid(price)){
+                    showError("Please provide valid price.");
+                    return;
+                }
+
                 SaleModel model = new SaleModel(mCampaignModel.getPromoterId(), mCampaignModel.getCampaignDateId(),
                         mCampaignModel.getCampaignId(), mCampaignModel.getCampaignLocationId(), settings.getsCoordinates(),
                         mSelectedStockItemId, deviceId, Double.parseDouble(price));
@@ -113,9 +133,24 @@ public class AddSalesActivity extends BaseActivity {
                 saveSale(model);
             }
         });
+        findViewById(R.id.toolbar).setOnClickListener(this);
+    }
+
+    @Override
+    public void displayPage(boolean hasContent) {
+
+    }
+
+    @Override
+    public void retryLoad() {
+
     }
 
     private void initSpinner() {
+        if(mStockItems == null)
+            mStockItems = new ArrayList<>();
+
+        mStockItems.add(0, new StockItem("", ""));
         SpinnerAdapter adapter = new SpinnerAdapter( AddSalesActivity.this, mStockItems);
         spinner.setAdapter(adapter);
     }
@@ -169,5 +204,12 @@ public class AddSalesActivity extends BaseActivity {
         etDeviceId = findViewById(R.id.etDeviceId);
         etPrice = findViewById(R.id.etPrice);
         spinner = findViewById(R.id.spinner);
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(v.getId() == R.id.toolbar){
+            super.onBackPressed();
+        }
     }
 }

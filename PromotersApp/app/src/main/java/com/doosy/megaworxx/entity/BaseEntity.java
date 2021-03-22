@@ -31,6 +31,11 @@ public class BaseEntity implements Serializable {
         this.createdBy = createdBy;
     }
 
+    public BaseEntity(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public String getId() {
         return id;
     }

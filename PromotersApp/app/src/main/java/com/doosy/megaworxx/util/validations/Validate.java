@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Validate {
@@ -73,5 +74,19 @@ public class Validate {
             return true;
         }
         return false;
+    }
+
+    public static  boolean isCurrencyValid(String value){
+        //String money="23.234,00";
+        Pattern p=Pattern.compile("^-?(\\d{1,3}\\s*?([.,]|$|\\s)\\s*?)+?$");
+        Matcher m=p.matcher(value);
+       return m.matches();
+    }
+
+    public static  boolean isDigitOnly(String value){
+        //String money="23.234,00";
+        Pattern p=Pattern.compile("^[0-9]*$");
+        Matcher m=p.matcher(value);
+       return m.matches();
     }
 }

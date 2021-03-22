@@ -10,17 +10,21 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.OvershootInterpolator;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.MotionEventCompat;
 import androidx.core.view.ViewCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
@@ -54,6 +58,7 @@ import com.google.android.material.tabs.TabLayout;
 
 public class CampaignActivity extends BaseActivity implements View.OnClickListener,
         OnCheckDialogListener, OnConfirmDialogListener {
+
 
     public enum CampaignTab {
         Survey,
@@ -92,45 +97,33 @@ public class CampaignActivity extends BaseActivity implements View.OnClickListen
     private int REQUEST_CHECK = 1;
 
     private SectionsPagerAdapter sectionsPagerAdapter;
+    private TabLayout tabs;
     private ConfirmDialog confirmDialog;
-
     private StatusModel mStatusModel;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_campaign_detail);
-        showLoading();
+
         campaignViewModel = new ViewModelProvider(this).get(CampaignViewModel.class);
         checkViewModel = new ViewModelProvider(this).get(CheckViewModel.class);
         initViews();
-
+        showLoading();
         String key = getString(R.string.key_campaign_model);
 
         if(getIntent().hasExtra(key)){
             mCampaignModel = (CampaignModel) getIntent().getSerializableExtra(key);
-
-            campaignViewModel.getCampaignById(settings.getToken(), mCampaignModel.getCampaignId());
-            mDataResponse = campaignViewModel.getCampaignResponse();
-            mDataResponse.observe(this, new Observer<DataServerResponse<Campaign>>() {
-                @Override
-                public void onChanged(DataServerResponse<Campaign> response) {
-                    hideLoading();
-                    if(response != null && response.isSuccessful()){
-                        mCampaign = response.getDataList().get(0);
-                        Log.d(Constants.TAG, mCampaign.toString());
-                        initViewPager();
-                    }
-                }
-            });
+            loadData();
             MaterialToolbar toolbar = findViewById(R.id.toolbar);
             toolbar.setTitle(mCampaignModel.getCampaignName());
-            getStatus(mCampaignModel);
+            getStatus();
         }
 
         baseFloatingActionButton = findViewById(R.id.baseFloatingActionButton);
 
         mainLayout = findViewById(R.id.mainLayout);
+
         getAnimations();
         baseFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,14 +136,45 @@ public class CampaignActivity extends BaseActivity implements View.OnClickListen
         fabCheckIn.setOnClickListener(this);
         fabCheckOut.setOnClickListener(this);
         mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
+        findViewById(R.id.toolbar).setOnClickListener(this);
         requestLocation();
 
     }
 
-    private void getStatus(CampaignModel campaignModel){
+    private void loadData(){
+
+        campaignViewModel.getCampaignById(settings.getToken(), mCampaignModel.getCampaignId());
+        mDataResponse = campaignViewModel.getCampaignResponse();
+        mDataResponse.observe(this, new Observer<DataServerResponse<Campaign>>() {
+            @Override
+            public void onChanged(DataServerResponse<Campaign> response) {
+
+                hideLoading();
+                if(response != null && response.isSuccessful()){
+                    mCampaign = response.getDataList().get(0);
+                    initViewPager();
+                }else{
+                    Log.d(Constants.TAG, "Failed to get data");
+                    displayErrorPage();
+                }
+            }
+        });
+    }
+
+    @Override
+    public void displayPage(boolean hasContent) {
+        //Display no content page
+    }
+
+    @Override
+    public void retryLoad() {
+        loadData();
+        getStatus();
+    }
+
+    private void getStatus(){
         LiveData<DataServerResponse<StatusModel>> response;
-        checkViewModel.getStatus(settings.getToken(), campaignModel);
+        checkViewModel.getStatus(settings.getToken(), mCampaignModel);
         response = checkViewModel.getResponse();
         response.observe(this, new Observer<DataServerResponse<StatusModel>>() {
             @Override
@@ -164,6 +188,7 @@ public class CampaignActivity extends BaseActivity implements View.OnClickListen
         });
     }
 
+
     public StatusModel getStatusModel(){
         return mStatusModel;
     }
@@ -173,9 +198,8 @@ public class CampaignActivity extends BaseActivity implements View.OnClickListen
                 new SectionsPagerAdapter(this, getSupportFragmentManager());
         ViewPager viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(sectionsPagerAdapter);
-        TabLayout tabs = findViewById(R.id.tabs);
+        tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
-
         tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -221,6 +245,19 @@ public class CampaignActivity extends BaseActivity implements View.OnClickListen
 
         }
     };
+
+
+    @Override
+    public void onBackPressed() {
+        if(tabs.getTabAt(0).isSelected()){
+            finish();
+            super.onBackPressed();
+        }else{
+            int tabIndex = 0;
+            changeAction(tabIndex);
+            tabs.getTabAt(tabIndex).select();
+        }
+    }
 
     private void check(final int checkType) {
         if (ActivityCompat.checkSelfPermission(this,
@@ -378,7 +415,6 @@ public class CampaignActivity extends BaseActivity implements View.OnClickListen
     private void getAnimations() {
 
         fabOpenAnimation = AnimationUtils.loadAnimation(this, R.anim.fab_open);
-
         fabCloseAnimation = AnimationUtils.loadAnimation(this, R.anim.fab_close);
 
     }
@@ -494,9 +530,11 @@ public class CampaignActivity extends BaseActivity implements View.OnClickListen
                 showConfirmDialog(dialogMessage);
             }
 
+        }else if(v.getId() == R.id.toolbar){
+            super.onBackPressed();
         }
 
-        if(isFabMenuOpen) collapseFabMenu();
+        onBaseFabClick();
     }
 
     @Override

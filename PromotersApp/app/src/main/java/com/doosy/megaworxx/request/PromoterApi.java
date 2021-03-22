@@ -15,6 +15,7 @@ import com.doosy.megaworxx.model.CampaignForm;
 import com.doosy.megaworxx.model.CheckModel;
 import com.doosy.megaworxx.model.ClientToken;
 import com.doosy.megaworxx.model.DataServerResponse;
+import com.doosy.megaworxx.model.FirebaseModel;
 import com.doosy.megaworxx.model.LoginModel;
 import com.doosy.megaworxx.model.SaleModel;
 import com.doosy.megaworxx.model.ServerResponse;
@@ -63,6 +64,11 @@ public interface PromoterApi {
     @POST("Campaign/save-campaign-stock")
     Call<ServerResponse> saveCampaignStock(@Header("Authorization") String token,
                                            @Body List<AddStockModel> addStockModel);
+
+    @Headers("Content-Type: application/json")
+    @POST("User/update-user-google-notification-token")
+    Call<ServerResponse> saveFireBaseToken(@Header("Authorization") String token,
+                                           @Body FirebaseModel firebaseModel);
 
     @Headers("Content-Type: application/json")
     @POST("Campaign/save-campaign-sale")

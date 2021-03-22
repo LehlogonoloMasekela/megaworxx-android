@@ -6,23 +6,23 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.doosy.megaworxx.entity.Today;
 import com.doosy.megaworxx.model.ClientToken;
 import com.doosy.megaworxx.model.DataServerResponse;
-import com.doosy.megaworxx.model.TodayCampaignModel;
 import com.doosy.megaworxx.ui.BaseActivity;
-import com.doosy.megaworxx.ui.home.HomeFragment;
+import com.doosy.megaworxx.ui.home.message.MessageActivity;
 import com.doosy.megaworxx.util.Constants;
-import com.doosy.megaworxx.util.Util;
 import com.doosy.megaworxx.viewmodel.CampaignViewModel;
-import com.doosy.megaworxx.viewmodel.PromoterViewModel;
 import com.doosy.megaworxx.viewmodel.TokenViewModel;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class SplashActivity extends BaseActivity {
 
@@ -30,6 +30,8 @@ public class SplashActivity extends BaseActivity {
     private CampaignViewModel mCampaignViewModel;
     private LiveData<DataServerResponse<ClientToken>> mTokenResponse;
     private LiveData<DataServerResponse<Today>> mResponse;
+
+    private Bundle bundleNotification = null;
 
     private TokenViewModel mTokenViewModel;
     @Override
@@ -39,6 +41,20 @@ public class SplashActivity extends BaseActivity {
         mTokenViewModel = new ViewModelProvider(this).get(TokenViewModel.class);
         hideSystemUi();
         setContentView(R.layout.activity_splash);
+
+        if(!settings.isSubscribedToFirebase()){
+            Log.d(Constants.TAG, "Subscribe to topic");
+            subscribeToTopic();
+        }
+
+        if(getIntent().hasExtra("id")){
+            bundleNotification = new Bundle();
+            Bundle bundle = getIntent().getExtras();
+            String id = bundle.getString("id");
+            Log.d(Constants.TAG, "ID here: "+id);
+            bundleNotification.putString("id", id);
+            bundleNotification.putBoolean("canOpenHome", true);
+        }
 
         if(!settings.isOnline()){
             navigateToError();
@@ -51,6 +67,33 @@ public class SplashActivity extends BaseActivity {
             getToken();
         }
 
+    }
+
+    @Override
+    public void displayPage(boolean hasContent) {
+
+    }
+
+    @Override
+    public void retryLoad() {
+
+    }
+
+    private void subscribeToTopic(){
+        String topic = getString(R.string.firebase_main_topic);
+        FirebaseMessaging.getInstance().subscribeToTopic(topic)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        String msg = "Successfully subscribed";
+                        if (!task.isSuccessful()) {
+                            msg = "Failed to subscribe.";
+                            settings.setSubscribeToFirebase(false);
+                        }
+                        settings.setSubscribeToFirebase(true);
+                        Log.d(Constants.TAG, "Status: "+msg);
+                    }
+                });
     }
 
     private void getToken(){
@@ -75,8 +118,6 @@ public class SplashActivity extends BaseActivity {
         });
     }
 
-
-
     private void getConfig(){
         mCampaignViewModel.fetchTodayDate(settings.getToken());
         subscribe();
@@ -86,10 +127,15 @@ public class SplashActivity extends BaseActivity {
         Intent mainIntent = new Intent(SplashActivity.this,
                 LoginActivity.class);
 
-        if(settings.isLoggedIn()){
+        if(bundleNotification != null && settings.isLoggedIn()){
+            mainIntent = new Intent(SplashActivity.this,
+                    MessageActivity.class);
+            mainIntent.putExtras(bundleNotification);
+        }else if(settings.isLoggedIn()){
             mainIntent = new Intent(SplashActivity.this,
                     HomeActivity.class);
         }
+
         startActivity(mainIntent);
         finish();
     }
@@ -97,6 +143,11 @@ public class SplashActivity extends BaseActivity {
     private void navigateToError(){
         Intent mainIntent = new Intent(SplashActivity.this,
                 ErrorActivity.class);
+
+        if(bundleNotification != null){
+            mainIntent.putExtras(bundleNotification);
+        }
+
         startActivity(mainIntent);
         finish();
     }
@@ -115,7 +166,7 @@ public class SplashActivity extends BaseActivity {
                 }
 
                 if(response == null){
-                    Log.d(Constants.TAG, "No date:");
+                    navigateToError();
                     return;
                 }
 
@@ -124,8 +175,10 @@ public class SplashActivity extends BaseActivity {
 
                     settings.setTodayDate(today.getDate());
                     navigateToNextScreen();
+                    return;
                 }
 
+                navigateToError();
             }
         });
     }

@@ -3,6 +3,7 @@ package com.doosy.megaworxx.ui.campaign;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -44,9 +45,11 @@ public class FeedbackFragment extends BaseFragment {
 
     private FeedBackViewModel mFeedBackViewModel;
     private LiveData<DataServerResponse<Feedback>> mResponse;
+    private FrameLayout noContent;
+
 
     public FeedbackFragment(){
-
+        setRetainInstance(true);
     }
 
     public static FeedbackFragment newInstance() {
@@ -66,8 +69,19 @@ public class FeedbackFragment extends BaseFragment {
     }
 
     @Override
+    public void retryLoad() {
+        loadData();
+    }
+
+    @Override
     public int getLayoutRes() {
         return R.layout.fragment_campaign_tab;
+    }
+
+    @Override
+    public void noContent(boolean hasContent){
+        mRecyclerviewFeedback.setVisibility(hasContent ? View.VISIBLE : View.GONE);
+        noContent.setVisibility(hasContent ? View.GONE : View.VISIBLE);
     }
 
     @Override
@@ -75,13 +89,14 @@ public class FeedbackFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
 
         initViews(view);
-
+        loadData();
         if(mCampaign != null){
-            String date = getActivity().getString(R.string.campaign_date, Util.formatDate(mCampaign.getDateCreated()) );
+            String date = getActivity().getString(R.string.campaign_date,
+                    Util.formatDate(mCampaign.getDateCreated()) );
             displayCampaignDate(date);
         }
+        displayStatus(null);
 
-        loadData();
     }
 
     public void loadData(){
@@ -94,11 +109,19 @@ public class FeedbackFragment extends BaseFragment {
                 hideLoading();
 
                 if(response != null && response.isSuccessful()){
+                    if(response.getDataList().size() > 0) {
+                        initRecyclerView(response.getDataList());
+                        mFeedbackAdapter.notifyDataSetChanged();
+                        displayStatus();
+                        noContent(true);
 
-                    initRecyclerView(response.getDataList());
-                    mFeedbackAdapter.notifyDataSetChanged();
-                    displayStatus();
+                    }else{
+                        noContent(false);
+                    }
+
+                    return;
                 }
+                showErrorPage();
 
             }
         });
@@ -113,7 +136,7 @@ public class FeedbackFragment extends BaseFragment {
 
     private void initViews(View view){
         mRecyclerviewFeedback = view.findViewById(R.id.recyclerViewCampaign);
-
+        noContent = view.findViewById(R.id.noContent);
     }
 
     private void initRecyclerView(List<Feedback> feedbacks){

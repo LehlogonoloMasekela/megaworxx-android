@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Megaworxx App</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="firebase_main_topic">megaworxx_main_topic</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_user_name">Calvin Masindi</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
@@ -30,6 +31,7 @@
     <string name="tab_stock">Stock</string>
     <string name="tab_feedback">Feedback</string>
     <string name="tab_sales">Sales</string>
+    <string name="default_notification_channel_id">10103</string>
 
 
     <string name="nav_action_home">Home</string>
@@ -77,6 +79,7 @@
         <item>Something happened trying to check out, please try again later.</item>
     </string-array>
 
+    <string name="general_error_message">Something went wrong, please try again.</string>
     <string name="stock_toolbar_text">Samsung J21 Promo at Menlyn</string>
     <string name="message_dummy">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Diam phasellus vestibulum lorem sed risus ultricies tristique. Ultricies mi quis hendrerit dolor magna.</string>
 

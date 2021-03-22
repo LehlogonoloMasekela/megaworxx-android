@@ -81,6 +81,7 @@ public class CampaignApiClient {
 
 
     public void getById(String token, String campaignId){
+        campaignResponse = new MutableLiveData<>();
         if(mCampaignRunnable != null){
             mCampaignRunnable = null;
         }
@@ -104,9 +105,9 @@ public class CampaignApiClient {
     }
 
     public void checkInOut(String token, CheckModel checkModel){
+        mResponse = new MutableLiveData<>();
         if(mCheckInOutRunnable != null){
             mCheckInOutRunnable = null;
-            mResponse = new MutableLiveData<>();
         }
 
         mCheckInOutRunnable = new CheckRunnable(token, checkModel);
@@ -123,6 +124,7 @@ public class CampaignApiClient {
 
     }
     public void fetchTodayDate(String token){
+        mTodayResponse = new MutableLiveData<>();
         if(mTodayRunnable != null){
             mTodayRunnable = null;
         }

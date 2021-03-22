@@ -14,16 +14,15 @@
         android:theme="@style/AppTheme.AppBarOverlay"
         >
 
-        <androidx.appcompat.widget.Toolbar
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            app:title="Stock items"
             app:navigationIcon="@drawable/ic_back"
             android:background="@color/colorPrimary"
             app:titleTextColor="@color/colorWhite"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
             />
-
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -33,10 +32,11 @@
         android:layout_height="match_parent">
 
         <LinearLayout
+
             android:orientation="vertical"
-            android:paddingStart="@dimen/filter_horizontal_padding"
+            android:paddingStart="@dimen/stock_item_view_horizontal_padding"
             android:paddingTop="@dimen/filter_vertical_padding"
-            android:paddingEnd="@dimen/filter_horizontal_padding"
+            android:paddingEnd="@dimen/stock_item_view_horizontal_padding"
             android:paddingBottom="@dimen/filter_vertical_padding"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -51,6 +51,7 @@
                 android:layout_height="wrap_content" />
 
              <LinearLayout
+                 android:visibility="gone"
                  android:layout_gravity="start"
                  android:layout_marginTop="20dp"
                  android:layout_marginBottom="20dp"
@@ -119,15 +120,17 @@
                         android:textSize="@dimen/table_header_size"
                         android:textStyle="bold"
                         android:textColor="@color/colorBlack"
-                        android:layout_weight="4"
+                        android:layout_weight="3.3"
                         android:text="Description"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content" />
 
                     <TextView
+                        android:gravity="end"
+                        android:id="@+id/tvItemQtyPrice"
                         android:textSize="@dimen/table_header_size"
                         android:textStyle="bold"
-                        android:layout_weight="0.7"
+                        android:layout_weight="1.15"
                         android:textColor="@color/colorBlack"
                         android:text="Qty"
                         android:layout_width="0dp"
@@ -150,6 +153,17 @@
                    android:id="@+id/recyclerViewStockView"
                    android:layout_width="match_parent"
                    android:layout_height="wrap_content"/>
+
+                <FrameLayout
+                    android:visibility="gone"
+                    android:layout_gravity="center_horizontal"
+                    android:id="@+id/noContent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    >
+                    <include layout="@layout/view_no_content" />
+                </FrameLayout>
 
             </LinearLayout>
         </LinearLayout>

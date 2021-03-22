@@ -13,14 +13,14 @@
 
     <fragment
         android:id="@+id/nav_message"
-        android:name="com.doosy.megaworxx.ui.message.MessageFragment"
+        android:name="com.doosy.megaworxx.ui.home.message.MessageFragment"
         android:label="@string/menu_message"
         tools:layout="@layout/fragment_message" />
 
 
     <fragment
         android:id="@+id/nav_campaign"
-        android:name="com.doosy.megaworxx.ui.filter.FilterFragment"
+        android:name="com.doosy.megaworxx.ui.home.FilterFragment"
         android:label="@string/menu_campaign"
         tools:layout="@layout/fragment_filter" />
 

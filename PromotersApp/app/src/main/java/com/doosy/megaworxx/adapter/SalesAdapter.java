@@ -44,7 +44,7 @@ public class SalesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         final StockSaleBase sale = mSales.get(position);
 
-        ((ViewHolder)holder).tvDisplayName.setText("Sale date: " + Util.formatDate(sale.getDateCreated()));
+        ((ViewHolder)holder).tvDisplayName.setText(sale.getStockItem().getName());
         ((ViewHolder)holder).imgItemIcon.setImageResource(R.drawable.ic_feedback_icon);
         ((ViewHolder)holder).imgActionIcon.setImageResource(R.drawable.ic_more);
 

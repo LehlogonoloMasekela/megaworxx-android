@@ -75,6 +75,16 @@ public class ViewAnswersActivity extends BaseActivity {
 
     }
 
+    @Override
+    public void displayPage(boolean hasContent) {
+
+    }
+
+    @Override
+    public void retryLoad() {
+
+    }
+
     private void initViews(){
         recyclerView = findViewById(R.id.recyclerViewAnswers);
     }

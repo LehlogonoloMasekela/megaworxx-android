@@ -44,7 +44,7 @@ public class StockAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         final StockSaleBase stock = mStocks.get(position);
 
-        ((ViewHolder)holder).tvDisplayName.setText("Stock Date: " + Util.formatDate(stock.getDateCreated()));
+        ((ViewHolder)holder).tvDisplayName.setText(stock.getStockItem().getName());
         ((ViewHolder)holder).imgItemIcon.setImageResource(R.drawable.ic_stock_icon);
         ((ViewHolder)holder).imgActionIcon.setImageResource(R.drawable.ic_more);
         ((ViewHolder)holder).cardItemMainLayout.setOnClickListener(new View.OnClickListener() {

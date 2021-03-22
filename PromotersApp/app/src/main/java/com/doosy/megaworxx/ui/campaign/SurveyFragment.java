@@ -3,6 +3,7 @@ package com.doosy.megaworxx.ui.campaign;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -33,10 +34,8 @@ import java.util.List;
  */
 public class SurveyFragment extends BaseFragment {
 
-    private static final String ARG_SECTION_NUMBER = "section_number";
-
     private List<Survey> mCampaigns = new ArrayList<>();
-
+    private FrameLayout noContent;
     private RecyclerView mRecyclerviewSurvey;
     private SurveyAdapter mSurveyAdapter;
     private Campaign mCampaign;
@@ -47,7 +46,7 @@ public class SurveyFragment extends BaseFragment {
     private LiveData<DataServerResponse<Survey>> mResponse;
 
     public SurveyFragment(){
-
+        setRetainInstance(true);
     }
 
     public static SurveyFragment newInstance() {
@@ -66,6 +65,17 @@ public class SurveyFragment extends BaseFragment {
     }
 
     @Override
+    public void retryLoad() {
+        loadData();
+    }
+
+    @Override
+    public void noContent(boolean hasContent){
+        mRecyclerviewSurvey.setVisibility(hasContent ? View.VISIBLE : View.GONE);
+        noContent.setVisibility(hasContent ? View.GONE : View.VISIBLE);
+    }
+
+    @Override
     public int getLayoutRes() {
         return R.layout.fragment_campaign_tab;
     }
@@ -74,12 +84,14 @@ public class SurveyFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initViews(view);
+        loadData();
+
         if(mCampaign != null){
             String date = getActivity().getString(R.string.campaign_date, Util.formatDate(mCampaign.getDateCreated()) );
             displayCampaignDate(date);
         }
+        displayStatus(null);
 
-        loadData();
     }
 
     public void loadData(){
@@ -91,11 +103,17 @@ public class SurveyFragment extends BaseFragment {
             public void onChanged(DataServerResponse<Survey> response) {
             hideLoading();
                 if(response != null && response.isSuccessful()){
-
-                    initRecyclerView(response.getDataList());
-                    mSurveyAdapter.notifyDataSetChanged();
-                    displayStatus();
+                    if(response.getDataList().size() > 0) {
+                        initRecyclerView(response.getDataList());
+                        mSurveyAdapter.notifyDataSetChanged();
+                        displayStatus();
+                        noContent(true);
+                    }else{
+                        noContent(false);
+                    }
+                    return;
                 }
+                showErrorPage();
 
             }
         });
@@ -103,6 +121,7 @@ public class SurveyFragment extends BaseFragment {
 
     private void initViews(View view){
         mRecyclerviewSurvey = view.findViewById(R.id.recyclerViewCampaign);
+        noContent = view.findViewById(R.id.noContent);
     }
 
     private void initRecyclerView(List<Survey> surveys){
